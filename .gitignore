@@ -1,0 +1,25 @@
+# Xcode
+.DS_Store
+*/build/
+build/
+DerivedData/
+*.moved-aside
+*.xcuserstate
+*.xcbkptlist
+*.xcuserdatad
+xcuserdata/
+!default.mode1v3
+!default.mode2v3
+!default.pbxuser
+!default.perspectivev3
+
+# Swift Package Manager
+.build/
+Packages/*/.build/
+.swiftpm/
+Package.resolved
+
+# XcodeGen
+*.xcodeproj
+*.xcworkspace
+!/NowyStart.xcodeproj/project.pbxproj

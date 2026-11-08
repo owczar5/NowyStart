@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "countries": [
+    {
+      "countryCode": "PL",
+      "countryName": "Polska",
+      "resources": [
+        {
+          "id": "pl-emergency-112",
+          "name": "Numer alarmowy",
+          "description": "Ogólny numer alarmowy w nagłych wypadkach i zagrożeniu życia.",
+          "phoneNumber": "112",
+          "verified": false
+        },
+        {
+          "id": "pl-crisis-116123",
+          "name": "Kryzys emocjonalny",
+          "description": "Telefon wsparcia emocjonalnego dla dorosłych w kryzysie.",
+          "phoneNumber": "116 123",
+          "verified": false
+        },
+        {
+          "id": "pl-drugs-800199990",
+          "name": "Telefon Zaufania – Narkotyki",
+          "description": "Ogólnopolski telefon zaufania w sprawie problemu narkomanii.",
+          "phoneNumber": "800 199 990",
+          "verified": false
+        }
+      ]
+    }
+  ],
+  "disclaimer": "Ta aplikacja nie zastępuje pomocy medycznej ani terapii."
+}
