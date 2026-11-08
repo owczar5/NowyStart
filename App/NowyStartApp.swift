@@ -18,7 +18,7 @@ public struct NowyStartApp: App {
     }
 }
 
-/// Primary root tab container.
+/// Primary root tab container for Nowy Start.
 public struct MainTabView: View {
     @State private var selectedTab: Int = 0
 
@@ -32,32 +32,26 @@ public struct MainTabView: View {
                 }
                 .tag(0)
 
-            NavigationStack {
-                PlaceholderView(title: "Dziennik", systemImage: "book.pages")
-            }
-            .tabItem {
-                Label("Dziennik", systemImage: "book.pages")
-            }
-            .tag(1)
+            JournalView()
+                .tabItem {
+                    Label("Dziennik", systemImage: "book.pages")
+                }
+                .tag(1)
+
+            SOSView()
+                .tabItem {
+                    Label("SOS", systemImage: "heart.circle")
+                }
+                .tag(2)
+
+            StatsView()
+                .tabItem {
+                    Label("Statystyki", systemImage: "chart.line.uptrend.xyaxis")
+                }
+                .tag(3)
 
             NavigationStack {
-                PlaceholderView(title: "SOS", systemImage: "heart.circle")
-            }
-            .tabItem {
-                Label("SOS", systemImage: "heart.circle")
-            }
-            .tag(2)
-
-            NavigationStack {
-                PlaceholderView(title: "Statystyki", systemImage: "chart.line.uptrend.xyaxis")
-            }
-            .tabItem {
-                Label("Statystyki", systemImage: "chart.line.uptrend.xyaxis")
-            }
-            .tag(3)
-
-            NavigationStack {
-                PlaceholderView(title: "Ustawienia", systemImage: "gearshape")
+                SettingsPlaceholderView()
             }
             .tabItem {
                 Label("Ustawienia", systemImage: "gearshape")
@@ -68,24 +62,23 @@ public struct MainTabView: View {
     }
 }
 
-/// Placeholder for upcoming feature tabs in subsequent phases.
-private struct PlaceholderView: View {
-    let title: String
-    let systemImage: String
-
+/// Placeholder for Settings tab implemented in Phase 4.
+private struct SettingsPlaceholderView: View {
     var body: some View {
         VStack(spacing: 16) {
-            Image(systemName: systemImage)
+            Image(systemName: "gearshape")
                 .font(.system(size: 48))
                 .foregroundStyle(AppTheme.warmAccent)
 
-            Text(title)
+            Text("Ustawienia")
                 .font(.title2.bold())
 
-            Text("Moduł przygotowywany w kolejnej fazie projektu.")
+            Text("Moduł powiadomień, blokady Face ID/kodu, eksportu/importu i trybu dyskretnego.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
         }
-        .navigationTitle(title)
+        .navigationTitle("Ustawienia")
     }
 }

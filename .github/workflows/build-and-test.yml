@@ -1,0 +1,91 @@
+name: Build, Test and Package for iOS Simulator
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: macos-14
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode Version
+        run: |
+          sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+          xcodebuild -version
+          swift --version
+
+      - name: Run SobrietyCore Package Tests
+        run: |
+          swift test --package-path Packages/SobrietyCore --enable-upcoming-feature StrictConcurrency
+
+      - name: Install XcodeGen
+        run: |
+          brew install xcodegen
+
+      - name: Generate Xcode Project
+        run: |
+          xcodegen generate
+
+      - name: Build App for iOS Simulator
+        run: |
+          xcodebuild build \
+            -project NowyStart.xcodeproj \
+            -scheme NowyStart \
+            -destination "generic/platform=iOS Simulator" \
+            -configuration Debug \
+            -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Run iOS Simulator Unit Tests
+        run: |
+          xcodebuild test \
+            -project NowyStart.xcodeproj \
+            -scheme NowyStartTests \
+            -destination "platform=iOS Simulator,name=iPhone 15" \
+            -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Package Simulator App (.zip) for Appetize.io
+        run: |
+          cd DerivedData/Build/Products/Debug-iphonesimulator
+          zip -r NowyStart-Simulator.app.zip NowyStart.app
+          echo "Package created at $(pwd)/NowyStart-Simulator.app.zip"
+
+      - name: Upload Simulator App Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NowyStart-Simulator-App
+          path: DerivedData/Build/Products/Debug-iphonesimulator/NowyStart-Simulator.app.zip
+          retention-days: 14
+
+      - name: Optional Appetize.io Upload
+        if: env.APPETIZE_API_TOKEN != ''
+        env:
+          APPETIZE_API_TOKEN: ${{ secrets.APPETIZE_API_TOKEN }}
+        run: |
+          ZIP_PATH="DerivedData/Build/Products/Debug-iphonesimulator/NowyStart-Simulator.app.zip"
+          RESPONSE=$(curl -s https://$APPETIZE_API_TOKEN@api.appetize.io/v1/apps \
+            -F "file=@$ZIP_PATH" \
+            -F "platform=ios")
+          echo "Appetize response: $RESPONSE"
+          PUBLIC_KEY=$(echo "$RESPONSE" | grep -o '"publicKey":"[^"]*' | cut -d'"' -f4)
+          if [ -n "$PUBLIC_KEY" ]; then
+            echo "### Appetize.io Live Test Link 🚀" >> $GITHUB_STEP_SUMMARY
+            echo "Testuj bezpośrednio w przeglądarce: https://appetize.io/app/$PUBLIC_KEY" >> $GITHUB_STEP_SUMMARY
+          fi
