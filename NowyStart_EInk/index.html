@@ -81,8 +81,8 @@
       color: #000000;
       border: none;
       border-right: 1px solid var(--border);
-      padding: 10px 4px;
-      font-size: 13px;
+      padding: 10px 2px;
+      font-size: 12px;
       font-weight: bold;
       cursor: pointer;
       text-align: center;
@@ -393,8 +393,8 @@
       <button class="active" onclick="switchTab('trackers')">Liczniki</button>
       <button onclick="switchTab('journal')">Dziennik</button>
       <button onclick="switchTab('sos')">SOS</button>
+      <button onclick="switchTab('motivation')">Motywacja</button>
       <button onclick="switchTab('stats')">Statystyki</button>
-      <button onclick="switchTab('help')">Pomoc</button>
       <button onclick="switchTab('settings')">Opcje</button>
     </nav>
 
@@ -483,11 +483,82 @@
 
       <div id="sos-quick-contact-container"></div>
 
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Szybkie wsparcie kryzysowe</h2>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <a href="tel:112" class="btn btn-secondary btn-small" style="flex:1;">112 (Alarmowy)</a>
+          <a href="tel:116123" class="btn btn-secondary btn-small" style="flex:1;">116 123 (Kryzys)</a>
+          <a href="tel:800199990" class="btn btn-secondary btn-small" style="flex:1.2;">800 199 990 (Narkotyki)</a>
+        </div>
+      </div>
+
       <button class="btn" onclick="openSOSFinishedModal()">Zakończ sesję SOS i oceń ochotę</button>
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB 4: STATYSTYKI                         -->
+    <!-- TAB 4: MOTYWACJA (ZASTĄPIŁA POMOC)        -->
+    <!-- ========================================== -->
+    <section id="tab-motivation" class="hidden">
+      <!-- Myśl na dziś -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Myśl na dziś (Spokojna wiedza)</h2>
+          <button class="btn btn-secondary btn-small" onclick="nextMotivationThought()">Inna myśl</button>
+        </div>
+        <div id="daily-thought-text" style="font-size: 15px; font-weight: 500; line-height: 1.5; margin: 6px 0;"></div>
+      </div>
+
+      <!-- Twoje Osobiste Powody -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Moje Powody</h2>
+          <span class="card-subtitle" id="motivation-reasons-count">0 powodów</span>
+        </div>
+        <p style="font-size:13px; color:#444; margin: 0 0 10px 0;">Twoje osobiste kotwice, które przypominają, po co to robisz.</p>
+        <div id="motivation-reasons-list"></div>
+        <div class="form-group mt-1">
+          <input type="text" id="quick-reason-input" placeholder="Wpisz kolejny powód...">
+          <button class="btn btn-secondary btn-small mt-1" onclick="addQuickReason()">+ Dodaj powód</button>
+        </div>
+      </div>
+
+      <!-- List do samego siebie na trudny moment -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">List do samego siebie na gorszy moment</h2>
+          <button class="btn btn-secondary btn-small" onclick="toggleEditLetter()" id="letter-edit-btn">Edytuj list</button>
+        </div>
+        <p style="font-size:13px; color:#444; margin: 0 0 8px 0;">
+          Napisany w chwili siły i spokoju. Przeczytaj go, gdy nadejdzie zwątpienie.
+        </p>
+        <div id="letter-display-box" style="font-style: italic; font-size: 14px; border: 1px solid var(--border-thin); padding: 12px; background: var(--surface-subtle); line-height: 1.5;"></div>
+        <div id="letter-editor-box" class="hidden mt-1">
+          <textarea id="letter-textarea" style="min-height: 110px;"></textarea>
+          <button class="btn btn-small mt-1" onclick="saveLetterToSelf()">Zapisz list</button>
+        </div>
+      </div>
+
+      <!-- Cele i nagrody za zaoszczędzone pieniądze -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Cele i nagrody za zaoszczędzone środki</h2>
+        </div>
+        <p style="font-size:13px; color:#444; margin: 0 0 10px 0;">
+          Pieniądze niewydane na nałóg pracują na Twoje prawdziwe marzenia i potrzeby.
+        </p>
+        <div id="rewards-list"></div>
+        <div class="form-group mt-1">
+          <input type="text" id="new-reward-title" placeholder="Nazwa celu (np. Nowy czytnik, Wyjazd)" class="mb-1">
+          <input type="number" id="new-reward-cost" placeholder="Koszt w PLN (np. 350)">
+          <button class="btn btn-secondary btn-small mt-1" onclick="addRewardGoal()">+ Dodaj cel nagrody</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: STATYSTYKI                         -->
     <!-- ========================================== -->
     <section id="tab-stats" class="hidden">
       <div class="stats-grid">
@@ -526,42 +597,6 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB 5: POMOC KRYZYSOWA                    -->
-    <!-- ========================================== -->
-    <section id="tab-help" class="hidden">
-      <div class="disclaimer-box">
-        <strong>Ważna informacja:</strong> Ta aplikacja nie zastępuje pomocy medycznej ani terapii.
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">112 - Numer alarmowy</h2>
-          <span class="card-subtitle">Weryfikacja: niepotwierdzony</span>
-        </div>
-        <p style="font-size: 13px; margin: 0 0 8px 0;">Ogólny numer alarmowy w nagłych wypadkach i zagrożeniu życia.</p>
-        <a href="tel:112" class="btn">Zadzwoń pod 112</a>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">116 123 - Kryzys emocjonalny</h2>
-          <span class="card-subtitle">Weryfikacja: niepotwierdzony</span>
-        </div>
-        <p style="font-size: 13px; margin: 0 0 8px 0;">Telefon wsparcia emocjonalnego dla dorosłych w kryzysie.</p>
-        <a href="tel:116123" class="btn">Zadzwoń pod 116 123</a>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">800 199 990 - Telefon Zaufania Narkotyki</h2>
-          <span class="card-subtitle">Weryfikacja: niepotwierdzony</span>
-        </div>
-        <p style="font-size: 13px; margin: 0 0 8px 0;">Ogólnopolski telefon zaufania w sprawie problemu narkomanii.</p>
-        <a href="tel:800199990" class="btn">Zadzwoń pod 800 199 990</a>
-      </div>
-    </section>
-
-    <!-- ========================================== -->
     <!-- TAB 6: USTAWIENIA & KOPIA ZAPASOWA        -->
     <!-- ========================================== -->
     <section id="tab-settings" class="hidden">
@@ -570,7 +605,7 @@
           <h2 class="card-title">Tryb dyskretny</h2>
         </div>
         <p style="font-size: 13px; margin: 0 0 10px 0;">
-          Ukrywa bezpośrednie nazwy substancji. W kartach i powiadomieniach wyświetla zdefiniowany alias lub neutralne słowo "Licznik".
+          Ukrywa bezpośrednie nazwy substancji. W kartach wyświetla zdefiniowany alias lub neutralne słowo "Licznik".
         </p>
         <label>
           <input type="checkbox" id="setting-discreet-mode" onchange="toggleDiscreetMode(this.checked)">
@@ -594,13 +629,17 @@
 
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">Zarządzanie motywacjami</h2>
+          <h2 class="card-title">Numery kryzysowe i wsparcie medyczne</h2>
         </div>
-        <div id="reasons-management-list"></div>
-        <div class="form-group mt-1">
-          <input type="text" id="new-reason-input" placeholder="Wpisz nowy powód...">
-          <button class="btn btn-secondary btn-small mt-1" onclick="addNewReasonFromSettings()">+ Dodaj powód</button>
-        </div>
+        <p style="font-size: 13px; margin: 0 0 8px 0;">
+          Ta aplikacja nie zastępuje pomocy medycznej ani terapii.
+        </p>
+        <ul style="padding-left: 20px; font-size: 13px; margin: 4px 0 10px 0;">
+          <li><strong>112</strong> - Numer alarmowy w nagłych wypadkach</li>
+          <li><strong>116 123</strong> - Telefon wsparcia emocjonalnego</li>
+          <li><strong>800 199 990</strong> - Ogólnopolski telefon zaufania - Narkotyki</li>
+        </ul>
+        <div style="font-size: 11px; color:#555;">Status numerów: weryfikacja przez autora.</div>
       </div>
 
       <div class="card">
@@ -811,6 +850,22 @@
       "Stres", "Zmęczenie", "Nuda", "Presja otoczenia", "Kłótnia", "Samotność", "Impreza", "Dostępność"
     ];
 
+    /* --- BAZA SPOKOJNYCH MYŚLI (PSYCHOLOGIA I STOICYZM) --- */
+    const THOUGHTS_CATALOG = [
+      "Zasada HALT: Zanim ulegniesz impulsowi, sprawdź, czy jesteś: Głodny (Hungry), Zły (Angry), Samotny (Lonely) czy Zmęczony (Tired). Często to nie głód używki, lecz podstawowa potrzeba Twojego ciała.",
+      "Fala ochoty trwa zazwyczaj od 10 do 15 minut. To tylko chwilowy wyrzut biochemiczny w mózgu – narasta, osiąga szczyt, a potem naturalnie opada.",
+      "Nie musisz decydować o całym swoim życiu. Twoim jedynym zadaniem jest zachować trzeźwość tylko przez dzisiejszy dzień.",
+      "Potknięcie to nie koniec drogi. Jeśli przeszedłeś 50 kilometrów i potknąłeś się o kamień, nie cofasz się na start. Nadal masz za sobą 50 kilometrów cennego doświadczenia.",
+      "Nuda i chwilowa pustka to naturalny etap leczenia receptorów dopaminy. To namacalny dowód na to, że Twój układ nerwowy się regeneruje.",
+      "Trzeźwość nie rozwiązuje wszystkich życiowych problemów od razu, ale sprawia, że żaden problem nie staje się przez nią gorszy.",
+      "Gdy pojawia się pokusa, nie walcz z nią siłowo. Zauważ ją spokojnie jak przepływającą chmurę i daj jej odpłynąć.",
+      "Zasada 24 godzin: Obiecaj sobie, że jeśli naprawdę zechcesz wrócić do nawyku, poczekasz z tą decyzją do jutra rano. Po nocy pokusa niemal zawsze znika.",
+      "Trzeźwość to nie jest wyrzeczenie ani kara. To odzyskanie wolności decydowania o własnym poranku i życiu.",
+      "Twój spokój jest wart więcej niż jakakolwiek chwilowa ulga okupiona poczuciem winy."
+    ];
+
+    let currentThoughtIdx = 0;
+
     /* --- POLSKA GRAMATYKA LICZEBNIKÓW --- */
     function polishPlural(value, one, few, many) {
       const v = Math.abs(Math.floor(value));
@@ -836,14 +891,15 @@
     }
 
     /* --- PAMIĘĆ LOKALNA (LOCALSTORAGE) --- */
-    const STORAGE_KEY = "nowystart_eink_data_v1";
+    const STORAGE_KEY = "nowystart_eink_data_v2";
 
     function defaultData() {
       const now = new Date();
       const threeDaysAgo = new Date(now.getTime() - (3 * 86400000 + 4 * 3600000));
       return {
-        schemaVersion: 1,
+        schemaVersion: 2,
         discreetMode: false,
+        letterToSelf: "Pamiętaj, jak ciężkie były poranki po użyciu i ile energii kosztowało ukrywanie tego. Teraz masz jasny umysł, siłę i spokój. Nie warto tego tracić dla paru minut iluzji.",
         trackers: [
           {
             id: "trk-" + Date.now(),
@@ -872,7 +928,12 @@
         ],
         reasons: [
           { id: "rsn-1", text: "Dla jasnego umysłu i dobrego snu każdego poranka." },
-          { id: "rsn-2", text: "Dla moich bliskich i wolności od przymusu." }
+          { id: "rsn-2", text: "Dla moich bliskich i wolności od przymusu." },
+          { id: "rsn-3", text: "Dla oszczędności pieniędzy i spokoju o przyszłość." }
+        ],
+        rewards: [
+          { id: "rew-1", title: "Dobre książki na czytnik", cost: 120 },
+          { id: "rew-2", title: "Wyjazd na weekend w góry", cost: 600 }
         ],
         supportContacts: [
           { id: "cnt-1", name: "Zaufana osoba", phone: "123456789" }
@@ -971,6 +1032,18 @@
       return { currentDays, longestDays, restarts, avgDays };
     }
 
+    function calculateTotalSavedMoney() {
+      let total = 0;
+      appState.trackers.forEach(t => {
+        if (!t.isArchived && t.dailyUnits && t.unitPrice) {
+          const el = calculateElapsed(t.startDate);
+          const daysDec = el.diffSec / 86400;
+          total += (t.dailyUnits * daysDec * t.unitPrice);
+        }
+      });
+      return Math.floor(total);
+    }
+
     /* --- RENDERING: LICZNIKI --- */
     function renderTrackers() {
       const container = document.getElementById("trackers-list");
@@ -1046,12 +1119,10 @@
 
     /* --- RENDERING: DZIENNIK I HEATMAPA --- */
     function renderJournal() {
-      // Check-in streak
       const loggedDays = new Set(appState.checkIns.map(c => c.date.split("T")[0]));
       const streak = calculateJournalStreak(loggedDays);
       document.getElementById("journal-streak-badge").innerText = streak + " " + polishPlural(streak, "dzień", "dni", "dni") + " z rzędu";
 
-      // Calendar heatmap for current month
       const heatmap = document.getElementById("calendar-heatmap");
       heatmap.innerHTML = "";
       const now = new Date();
@@ -1060,7 +1131,6 @@
       const firstDayOfMonth = new Date(year, month, 1);
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       
-      // Start day offset (Monday = 0)
       let startOffset = firstDayOfMonth.getDay() - 1;
       if (startOffset === -1) startOffset = 6;
 
@@ -1085,7 +1155,6 @@
         heatmap.appendChild(cell);
       }
 
-      // History list
       const list = document.getElementById("journal-history-list");
       list.innerHTML = "";
       if (appState.checkIns.length === 0) {
@@ -1129,12 +1198,140 @@
       return streak;
     }
 
+    /* --- RENDERING: MOTYWACJA --- */
+    function renderMotivation() {
+      // Thought
+      document.getElementById("daily-thought-text").innerText = THOUGHTS_CATALOG[currentThoughtIdx];
+
+      // Reasons list
+      const rContainer = document.getElementById("motivation-reasons-list");
+      rContainer.innerHTML = "";
+      document.getElementById("motivation-reasons-count").innerText = appState.reasons.length + " " + polishPlural(appState.reasons.length, "powód", "powody", "powodów");
+
+      if (appState.reasons.length === 0) {
+        rContainer.innerHTML = "<p style='font-size:13px; color:#555;'>Brak wpisanych powodów.</p>";
+      } else {
+        appState.reasons.forEach((r, idx) => {
+          const div = document.createElement("div");
+          div.style.display = "flex";
+          div.style.justifyContent = "space-between";
+          div.style.alignItems = "center";
+          div.style.padding = "6px 0";
+          div.style.borderBottom = "1px solid var(--border-thin)";
+          div.style.fontSize = "14px";
+          div.innerHTML = `
+            <span>&bull; ${r.text}</span>
+            <button class="btn btn-secondary btn-small" style="padding:2px 6px;" onclick="deleteReason(${idx})">Usuń</button>
+          `;
+          rContainer.appendChild(div);
+        });
+      }
+
+      // Letter to self
+      const letterText = appState.letterToSelf || "Nie napisałeś jeszcze listu do siebie. Kliknij 'Edytuj list' powyżej i zapisz swoje myśli.";
+      document.getElementById("letter-display-box").innerText = `"${letterText}"`;
+      document.getElementById("letter-textarea").value = appState.letterToSelf || "";
+
+      // Rewards & Financial Goals
+      renderRewards();
+    }
+
+    function nextMotivationThought() {
+      currentThoughtIdx = (currentThoughtIdx + 1) % THOUGHTS_CATALOG.length;
+      document.getElementById("daily-thought-text").innerText = THOUGHTS_CATALOG[currentThoughtIdx];
+    }
+
+    function addQuickReason() {
+      const input = document.getElementById("quick-reason-input");
+      const text = input.value.trim();
+      if (!text) return;
+      appState.reasons.push({ id: "rsn-" + Date.now(), text: text });
+      input.value = "";
+      saveAppState(appState);
+      renderMotivation();
+    }
+
+    function toggleEditLetter() {
+      const editorBox = document.getElementById("letter-editor-box");
+      const isHidden = editorBox.classList.contains("hidden");
+      if (isHidden) {
+        editorBox.classList.remove("hidden");
+        document.getElementById("letter-edit-btn").innerText = "Anuluj edycję";
+      } else {
+        editorBox.classList.add("hidden");
+        document.getElementById("letter-edit-btn").innerText = "Edytuj list";
+      }
+    }
+
+    function saveLetterToSelf() {
+      const newText = document.getElementById("letter-textarea").value.trim();
+      appState.letterToSelf = newText;
+      saveAppState(appState);
+      toggleEditLetter();
+      renderMotivation();
+    }
+
+    function renderRewards() {
+      const container = document.getElementById("rewards-list");
+      container.innerHTML = "";
+      const totalSaved = calculateTotalSavedMoney();
+
+      if (!appState.rewards || appState.rewards.length === 0) {
+        container.innerHTML = "<p style='font-size:13px; color:#555;'>Brak zdefiniowanych celów.</p>";
+        return;
+      }
+
+      appState.rewards.forEach((rew, idx) => {
+        const percent = Math.min(100, Math.floor((totalSaved / rew.cost) * 100));
+        const div = document.createElement("div");
+        div.style.padding = "8px 0";
+        div.style.borderBottom = "1px solid var(--border-thin)";
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold;">
+            <span>${rew.title} (${rew.cost} zł)</span>
+            <span>${percent}% (${totalSaved} zł)</span>
+          </div>
+          <div class="progress-bar-container" style="height: 10px;">
+            <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+          </div>
+          <div style="text-align: right; margin-top: 4px;">
+            <button class="btn btn-secondary btn-small" style="padding:2px 6px;" onclick="deleteReward(${idx})">Usuń cel</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addRewardGoal() {
+      const titleInput = document.getElementById("new-reward-title");
+      const costInput = document.getElementById("new-reward-cost");
+      const title = titleInput.value.trim();
+      const cost = parseFloat(costInput.value);
+
+      if (!title || !cost || cost <= 0) {
+        alert("Wpisz poprawną nazwę celu i koszt.");
+        return;
+      }
+
+      if (!appState.rewards) appState.rewards = [];
+      appState.rewards.push({ id: "rew-" + Date.now(), title, cost });
+      titleInput.value = "";
+      costInput.value = "";
+      saveAppState(appState);
+      renderRewards();
+    }
+
+    function deleteReward(idx) {
+      appState.rewards.splice(idx, 1);
+      saveAppState(appState);
+      renderRewards();
+    }
+
     /* --- RENDERING: STATYSTYKI --- */
     function renderStats() {
       let longestOverall = 0;
       let currentOverall = 0;
       let totalRestarts = 0;
-      let totalSavings = 0;
       let totalMilestones = 0;
 
       appState.trackers.forEach(t => {
@@ -1143,28 +1340,22 @@
         if (!t.isArchived && s.currentDays > currentOverall) currentOverall = s.currentDays;
         totalRestarts += s.restarts;
 
-        if (t.dailyUnits && t.unitPrice) {
-          const el = calculateElapsed(t.startDate);
-          const daysDec = el.diffSec / 86400;
-          totalSavings += (t.dailyUnits * daysDec * t.unitPrice);
-        }
-
         const el = calculateElapsed(t.startDate);
         MILESTONES_CATALOG.forEach(m => {
           if (m.seconds <= el.diffSec) totalMilestones++;
         });
       });
 
+      const totalSavings = calculateTotalSavedMoney();
       const uniqueJournalDays = new Set(appState.checkIns.map(c => c.date.split("T")[0])).size;
 
       document.getElementById("stats-longest-streak").innerText = longestOverall + " d";
       document.getElementById("stats-current-streak").innerText = currentOverall + " d";
       document.getElementById("stats-restarts-count").innerText = totalRestarts;
-      document.getElementById("stats-savings-total").innerText = Math.floor(totalSavings) + " zł";
+      document.getElementById("stats-savings-total").innerText = totalSavings + " zł";
       document.getElementById("stats-journal-days").innerText = uniqueJournalDays;
       document.getElementById("stats-milestones-total").innerText = totalMilestones;
 
-      // Milestone list
       const mList = document.getElementById("stats-milestones-list");
       mList.innerHTML = "";
       const primaryTracker = appState.trackers.find(t => !t.isArchived);
@@ -1187,25 +1378,9 @@
       }
     }
 
-    /* --- RENDERING: USTAWIENIA, POWODY I KONTAKTY --- */
+    /* --- RENDERING: USTAWIENIA I KONTAKTY --- */
     function renderSettings() {
       document.getElementById("setting-discreet-mode").checked = !!appState.discreetMode;
-
-      // Reasons
-      const rContainer = document.getElementById("reasons-management-list");
-      rContainer.innerHTML = "";
-      appState.reasons.forEach((r, idx) => {
-        const div = document.createElement("div");
-        div.style.display = "flex";
-        div.style.justifyContent = "space-between";
-        div.style.fontSize = "13px";
-        div.style.padding = "4px 0";
-        div.innerHTML = `
-          <span>- ${r.text}</span>
-          <button class="btn btn-secondary btn-small" style="padding:2px 6px;" onclick="deleteReason(${idx})">Usuń</button>
-        `;
-        rContainer.appendChild(div);
-      });
 
       // Contacts
       const cContainer = document.getElementById("contacts-management-list");
@@ -1247,6 +1422,7 @@
       if (tabId === "trackers") renderTrackers();
       if (tabId === "journal") renderJournal();
       if (tabId === "sos") refreshSOSReason();
+      if (tabId === "motivation") renderMotivation();
       if (tabId === "stats") renderStats();
       if (tabId === "settings") renderSettings();
     }
@@ -1542,20 +1718,10 @@
       renderTrackers();
     }
 
-    function addNewReasonFromSettings() {
-      const input = document.getElementById("new-reason-input");
-      const text = input.value.trim();
-      if (!text) return;
-      appState.reasons.push({ id: "rsn-" + Date.now(), text: text });
-      input.value = "";
-      saveAppState(appState);
-      renderSettings();
-    }
-
     function deleteReason(idx) {
       appState.reasons.splice(idx, 1);
       saveAppState(appState);
-      renderSettings();
+      renderMotivation();
     }
 
     function addNewContactFromSettings() {
