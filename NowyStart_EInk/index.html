@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <title>Nowy Start - Tracker Abstynencji</title>
+  <style>
+    /* ============================================================
+       STRICT E-INK & MONOCHROME STYLING (Bemi Cognita Tab 5 / E-Paper)
+       Zero animations, zero transitions, 100% high contrast black/white.
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      transition: none !important;
+      animation: none !important;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --surface: #ffffff;
+      --surface-subtle: #f4f4f4;
+      --border: #000000;
+      --border-thin: #888888;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.4;
+      -webkit-font-smoothing: none;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 12px 14px 80px 14px;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .header-tag {
+      font-size: 11px;
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      font-weight: bold;
+    }
+
+    /* Tab Navigation */
+    nav.tabs {
+      display: flex;
+      border: 2px solid var(--border);
+      margin-bottom: 16px;
+      background: var(--surface);
+    }
+
+    nav.tabs button {
+      flex: 1;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      border-right: 1px solid var(--border);
+      padding: 10px 4px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    nav.tabs button:last-child {
+      border-right: none;
+    }
+
+    nav.tabs button.active {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    /* Cards and Boxes */
+    .card {
+      border: 2px solid var(--border);
+      background: var(--surface);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--border-thin);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: #333333;
+    }
+
+    /* Big Numbers for E-Ink */
+    .hero-number {
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1.0;
+      margin: 6px 0 2px 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hero-unit {
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .time-subtext {
+      font-size: 15px;
+      font-family: monospace;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    /* Progress bar */
+    .progress-bar-container {
+      width: 100%;
+      height: 14px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      margin: 8px 0 4px 0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #000000;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      background: #000000;
+      color: #ffffff;
+      border: 2px solid var(--border);
+      padding: 12px 14px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 8px;
+    }
+
+    .btn:active {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .btn-secondary:active {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .btn-small {
+      display: inline-block;
+      width: auto;
+      padding: 6px 12px;
+      font-size: 13px;
+      margin-top: 0;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-group .btn {
+      flex: 1;
+      margin-top: 0;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border: 2px solid var(--border);
+      background: #ffffff;
+      color: #000000;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    /* Chips */
+    .chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .chip.selected {
+      background: #000000;
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    /* Calendar Heatmap */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .heatmap-day {
+      aspect-ratio: 1;
+      border: 1px solid var(--border-thin);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      background: #ffffff;
+    }
+
+    .heatmap-day.logged {
+      background: #000000;
+      color: #ffffff;
+      border-color: #000000;
+    }
+
+    .heatmap-day.today {
+      border: 2px solid #000000;
+      text-decoration: underline;
+    }
+
+    .heatmap-day.empty {
+      border: none;
+      background: transparent;
+    }
+
+    /* Alerts and Disclaimers */
+    .disclaimer-box {
+      border: 2px dashed var(--border);
+      padding: 10px 12px;
+      font-size: 13px;
+      margin: 12px 0;
+      background: var(--surface-subtle);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-box {
+      border: 1px solid var(--border);
+      padding: 10px;
+      background: #ffffff;
+    }
+
+    .stat-box-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #444444;
+    }
+
+    .stat-box-value {
+      font-size: 24px;
+      font-weight: 900;
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Modals / Overlays */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    .modal-box {
+      max-width: 560px;
+      margin: 20px auto;
+      border: 3px solid var(--border);
+      background: #ffffff;
+      padding: 18px;
+    }
+
+    /* Utility */
+    .hidden {
+      display: none !important;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .mt-1 { margin-top: 8px; }
+    .mt-2 { margin-top: 14px; }
+    .mb-1 { margin-bottom: 8px; }
+    .mb-2 { margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Nowy Start</h1>
+      </div>
+      <div class="header-tag">Bemi Cognita E-Ink</div>
+    </header>
+
+    <nav class="tabs">
+      <button class="active" onclick="switchTab('trackers')">Liczniki</button>
+      <button onclick="switchTab('journal')">Dziennik</button>
+      <button onclick="switchTab('sos')">SOS</button>
+      <button onclick="switchTab('stats')">Statystyki</button>
+      <button onclick="switchTab('help')">Pomoc</button>
+      <button onclick="switchTab('settings')">Opcje</button>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: LICZNIKI (DASHBOARD)               -->
+    <!-- ========================================== -->
+    <section id="tab-trackers">
+      <div id="trackers-list"></div>
+
+      <button class="btn btn-secondary" onclick="openAddTrackerModal()">
+        + Dodaj nowy licznik
+      </button>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: DZIENNIK                           -->
+    <!-- ========================================== -->
+    <section id="tab-journal" class="hidden">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Dzienny zapis uważności</h2>
+          <span class="card-subtitle" id="journal-streak-badge">0 dni z rzędu</span>
+        </div>
+        <p style="font-size:13px; margin:0 0 10px 0;">Regularne zapisywanie nastroju i intensywności ochoty wzmacnia spokój.</p>
+        <button class="btn" onclick="openCheckInModal()">Zapisz dzisiejszy wpis</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Heatmapa wpisów (bieżący miesiąc)</h2>
+        </div>
+        <div id="calendar-heatmap" class="heatmap-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Historia wpisów</h2>
+        </div>
+        <div id="journal-history-list"></div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: SOS "MAM OCHOTĘ"                   -->
+    <!-- ========================================== -->
+    <section id="tab-sos" class="hidden">
+      <div class="card text-center">
+        <div class="card-subtitle" style="font-weight:bold;">Fala ochoty trwa zazwyczaj do 10 minut</div>
+        <div class="hero-number" id="sos-timer-display" style="font-size: 56px;">10:00</div>
+        <div class="btn-group">
+          <button class="btn" id="sos-start-pause-btn" onclick="toggleSOSTimer()">Rozpocznij odliczanie</button>
+          <button class="btn btn-secondary" onclick="resetSOSTimer()">Od nowa</button>
+        </div>
+      </div>
+
+      <div class="card" id="sos-reason-box">
+        <div class="card-header">
+          <h2 class="card-title">Twój powód</h2>
+        </div>
+        <div id="sos-random-reason" style="font-style:italic; font-size:16px;">
+          "Pamiętaj, dlaczego podjąłeś tę decyzję."
+        </div>
+      </div>
+
+      <div class="card text-center">
+        <div class="card-header">
+          <h2 class="card-title">Ćwiczenie oddechowe 4-4-4-4</h2>
+        </div>
+        <div style="font-size: 20px; font-weight: bold; margin: 8px 0;" id="breathing-phase-text">Wdech</div>
+        <div style="font-size: 32px; font-weight: 900;" id="breathing-seconds-text">1 / 4</div>
+        <p style="font-size: 13px; margin-top: 6px;">Spokojny, miarowy oddech uspokaja układ nerwowy.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Proste czynności zastępcze</h2>
+        </div>
+        <ul style="padding-left: 20px; margin: 6px 0; font-size: 14px;">
+          <li>Wypij powoli dużą szklankę chłodnej wody</li>
+          <li>Wyjdź na krótki spacer na świeże powietrze</li>
+          <li>Umyj twarz zimną wodą</li>
+          <li>Zadzwoń do zaufanej osoby lub napisz wiadomość</li>
+          <li>Włącz spokojną muzykę lub odetchnij głęboko</li>
+        </ul>
+      </div>
+
+      <div id="sos-quick-contact-container"></div>
+
+      <button class="btn" onclick="openSOSFinishedModal()">Zakończ sesję SOS i oceń ochotę</button>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: STATYSTYKI                         -->
+    <!-- ========================================== -->
+    <section id="tab-stats" class="hidden">
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-box-title">Najdłuższa seria</div>
+          <div class="stat-box-value" id="stats-longest-streak">0 d</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-title">Aktualna seria</div>
+          <div class="stat-box-value" id="stats-current-streak">0 d</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-title">Nowe starty</div>
+          <div class="stat-box-value" id="stats-restarts-count">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-title">Zaoszczędzone</div>
+          <div class="stat-box-value" id="stats-savings-total">0 zł</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-title">Dni z wpisem</div>
+          <div class="stat-box-value" id="stats-journal-days">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-title">Cele osiągnięte</div>
+          <div class="stat-box-value" id="stats-milestones-total">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Kamienie milowe</h2>
+        </div>
+        <div id="stats-milestones-list"></div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: POMOC KRYZYSOWA                    -->
+    <!-- ========================================== -->
+    <section id="tab-help" class="hidden">
+      <div class="disclaimer-box">
+        <strong>Ważna informacja:</strong> Ta aplikacja nie zastępuje pomocy medycznej ani terapii.
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">112 - Numer alarmowy</h2>
+          <span class="card-subtitle">Weryfikacja: niepotwierdzony</span>
+        </div>
+        <p style="font-size: 13px; margin: 0 0 8px 0;">Ogólny numer alarmowy w nagłych wypadkach i zagrożeniu życia.</p>
+        <a href="tel:112" class="btn">Zadzwoń pod 112</a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">116 123 - Kryzys emocjonalny</h2>
+          <span class="card-subtitle">Weryfikacja: niepotwierdzony</span>
+        </div>
+        <p style="font-size: 13px; margin: 0 0 8px 0;">Telefon wsparcia emocjonalnego dla dorosłych w kryzysie.</p>
+        <a href="tel:116123" class="btn">Zadzwoń pod 116 123</a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">800 199 990 - Telefon Zaufania Narkotyki</h2>
+          <span class="card-subtitle">Weryfikacja: niepotwierdzony</span>
+        </div>
+        <p style="font-size: 13px; margin: 0 0 8px 0;">Ogólnopolski telefon zaufania w sprawie problemu narkomanii.</p>
+        <a href="tel:800199990" class="btn">Zadzwoń pod 800 199 990</a>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 6: USTAWIENIA & KOPIA ZAPASOWA        -->
+    <!-- ========================================== -->
+    <section id="tab-settings" class="hidden">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Tryb dyskretny</h2>
+        </div>
+        <p style="font-size: 13px; margin: 0 0 10px 0;">
+          Ukrywa bezpośrednie nazwy substancji. W kartach i powiadomieniach wyświetla zdefiniowany alias lub neutralne słowo "Licznik".
+        </p>
+        <label>
+          <input type="checkbox" id="setting-discreet-mode" onchange="toggleDiscreetMode(this.checked)">
+          Włącz tryb dyskretny
+        </label>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Kopia zapasowa (JSON)</h2>
+        </div>
+        <p style="font-size: 13px; margin: 0 0 10px 0;">
+          Wszystkie Twoje dane znajdują się wyłącznie na tym czytniku. Możesz pobrać plik JSON lub wgrać istniejącą kopię.
+        </p>
+        <div class="btn-group">
+          <button class="btn" onclick="exportBackupJSON()">Pobierz kopię (Eksport)</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('import-file-input').click()">Wgraj kopię (Import)</button>
+        </div>
+        <input type="file" id="import-file-input" accept=".json" style="display:none;" onchange="importBackupJSON(event)">
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Zarządzanie motywacjami</h2>
+        </div>
+        <div id="reasons-management-list"></div>
+        <div class="form-group mt-1">
+          <input type="text" id="new-reason-input" placeholder="Wpisz nowy powód...">
+          <button class="btn btn-secondary btn-small mt-1" onclick="addNewReasonFromSettings()">+ Dodaj powód</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Osoby zaufane (Kontakty SOS)</h2>
+        </div>
+        <div id="contacts-management-list"></div>
+        <div class="form-group mt-1">
+          <input type="text" id="new-contact-name" placeholder="Imię osoby bliskiej" class="mb-1">
+          <input type="text" id="new-contact-phone" placeholder="Numer telefonu">
+          <button class="btn btn-secondary btn-small mt-1" onclick="addNewContactFromSettings()">+ Dodaj kontakt</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DODAWANIE LICZNIKA                 -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="modal-add-tracker">
+    <div class="modal-box">
+      <h2>Nowy licznik</h2>
+      <div class="form-group">
+        <label>Rodzaj substancji / wyzwania:</label>
+        <select id="add-substance-kind" onchange="onSubstanceChange(this.value)">
+          <option value="alcohol">Alkohol</option>
+          <option value="nicotineCigarettes">Papierosy / Nikotyna</option>
+          <option value="eCigarettes">E-papierosy</option>
+          <option value="cannabis">Marihuana</option>
+          <option value="amphetamine">Amfetamina</option>
+          <option value="cocaine">Kokaina</option>
+          <option value="opioids">Opioidy</option>
+          <option value="benzodiazepines">Benzodiazepiny</option>
+          <option value="caffeine">Kofeina</option>
+          <option value="gambling">Hazard</option>
+          <option value="other">Inne (własna nazwa)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Nazwa własna (opcjonalnie):</label>
+        <input type="text" id="add-custom-name" placeholder="np. Mój licznik">
+      </div>
+
+      <div class="form-group">
+        <label>Dyskretny alias (np. Projekt Spokój):</label>
+        <input type="text" id="add-alias" placeholder="Dla trybu dyskretnego">
+      </div>
+
+      <div class="form-group">
+        <label>Data i godzina rozpoczęcia:</label>
+        <input type="datetime-local" id="add-start-date">
+        <div class="chips-container mt-1">
+          <div class="chip" onclick="setAddDateNow()">Teraz</div>
+          <div class="chip" onclick="setAddDateTodayMorning()">Dziś rano (08:00)</div>
+          <div class="chip" onclick="setAddDateYesterday()">Wczoraj</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label id="add-units-label">Zużycie dziennie (opcjonalnie):</label>
+        <input type="number" step="0.1" id="add-daily-units" placeholder="np. 5">
+      </div>
+
+      <div class="form-group">
+        <label>Cena za jednostkę w PLN (opcjonalnie):</label>
+        <input type="number" step="0.5" id="add-unit-price" placeholder="np. 14.50">
+      </div>
+
+      <div class="form-group">
+        <label>Twój powód (opcjonalnie):</label>
+        <input type="text" id="add-initial-reason" placeholder="Dlaczego podejmujesz ten krok?">
+      </div>
+
+      <div class="disclaimer-box hidden" id="add-medical-warning">
+        <strong>Ostrzeżenie medyczne:</strong> Nagłe odstawienie niektórych substancji (zwłaszcza alkoholu, benzodiazepin i opioidów) może być niebezpieczne dla zdrowia. Jeśli używałeś ich regularnie, skonsultuj się z lekarzem.
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="closeModal('modal-add-tracker')">Anuluj</button>
+        <button class="btn" onclick="saveNewTracker()">Zapisz licznik</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: NOWY START (RESTART SERII)         -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="modal-restart">
+    <div class="modal-box">
+      <h2>Nowy start</h2>
+      <p style="font-size:15px; font-weight:bold; margin-bottom: 6px;">
+        Potknięcie nie kasuje twojej drogi. Zaczynasz kolejną serię.
+      </p>
+      <p style="font-size:13px; color:#333; margin-bottom: 12px;">
+        Każdy dzień przeżyty w trzeźwości należy do Ciebie. To cenne doświadczenie, które zostaje na stałe.
+      </p>
+
+      <div class="stat-box mb-2">
+        <div class="stat-box-title">Twój stały punkt odniesienia:</div>
+        <div class="stat-box-value" id="restart-longest-streak-anchor" style="font-size: 18px;">Najdłuższa seria: 0 dni</div>
+      </div>
+
+      <div class="form-group">
+        <label>Kiedy zaczynasz nową serię?</label>
+        <input type="datetime-local" id="restart-date">
+      </div>
+
+      <div class="form-group">
+        <label>Co wpłynęło na sytuację? (wybierz wyzwalacze):</label>
+        <div class="chips-container" id="restart-triggers-chips"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Notatka na przyszłość (opcjonalnie):</label>
+        <textarea id="restart-note" placeholder="Czego się nauczyłeś? Co pomoże następnym razem?"></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="closeModal('modal-restart')">Anuluj</button>
+        <button class="btn" onclick="saveRestart()">Zapisz i zacznij nową serię</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DZIENNY CHECK-IN                   -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="modal-checkin">
+    <div class="modal-box">
+      <h2>Dzienny wpis</h2>
+      <div class="form-group">
+        <label>Jak oceniasz dzisiejszy nastrój (1 - 5):</label>
+        <select id="checkin-mood">
+          <option value="1">1 - Bardzo trudny</option>
+          <option value="2">2 - Obniżony</option>
+          <option value="3" selected>3 - Spokojny / neutralny</option>
+          <option value="4">4 - Dobry</option>
+          <option value="5">5 - Bardzo dobry</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Intensywność ochoty (0 - 10): <span id="checkin-craving-val">2</span></label>
+        <input type="range" min="0" max="10" value="2" id="checkin-craving" oninput="document.getElementById('checkin-craving-val').innerText = this.value">
+        <div style="display:flex; justify-content:space-between; font-size:11px;">
+          <span>0 (Brak)</span>
+          <span>10 (Bardzo silna)</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Wyzwalacze dzisiejszego dnia:</label>
+        <div class="chips-container" id="checkin-triggers-chips"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Krótka refleksja / notatka (opcjonalnie):</label>
+        <textarea id="checkin-note" placeholder="Co dziś pomagało utrzymać spokój?"></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="closeModal('modal-checkin')">Anuluj</button>
+        <button class="btn" onclick="saveCheckIn()">Zapisz wpis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ZAKOŃCZENIE SOS                    -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="modal-sos-finish">
+    <div class="modal-box text-center">
+      <h2>Zakończenie sesji SOS</h2>
+      <p style="font-size:14px; margin-bottom: 14px;">
+        Fala ochoty osiąga swój szczyt i naturalnie opada. Jak teraz oceniasz jej siłę?
+      </p>
+
+      <div class="form-group text-left" style="text-align: left;">
+        <label>Ocena ochoty (0 - 10): <span id="sos-post-craving-val">2</span></label>
+        <input type="range" min="0" max="10" value="2" id="sos-post-craving" oninput="document.getElementById('sos-post-craving-val').innerText = this.value">
+      </div>
+
+      <button class="btn" onclick="saveSOSFinish()">Zapisz w dzienniku i zamknij</button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT: LOGIKA, BAZA I E-INK CONTROLLER -->
+  <!-- ========================================== -->
+  <script>
+    /* --- KATALOG SUBSTANCJI --- */
+    const SUBSTANCES = {
+      alcohol: { name: "Alkohol", unit: "drinki", warning: true },
+      nicotineCigarettes: { name: "Papierosy / Nikotyna", unit: "szt.", warning: false },
+      eCigarettes: { name: "E-papierosy", unit: "buchi", warning: false },
+      cannabis: { name: "Marihuana", unit: "gramy", warning: false },
+      amphetamine: { name: "Amfetamina", unit: "gramy", warning: false },
+      cocaine: { name: "Kokaina", unit: "gramy", warning: false },
+      opioids: { name: "Opioidy", unit: "dawki", warning: true },
+      benzodiazepines: { name: "Benzodiazepiny", unit: "tabletki", warning: true },
+      caffeine: { name: "Kofeina", unit: "porcje", warning: false },
+      gambling: { name: "Hazard", unit: "zakłady", warning: false },
+      other: { name: "Inne", unit: "jednostki", warning: false }
+    };
+
+    const COMMON_TRIGGERS = [
+      "Stres", "Zmęczenie", "Nuda", "Presja otoczenia", "Kłótnia", "Samotność", "Impreza", "Dostępność"
+    ];
+
+    /* --- POLSKA GRAMATYKA LICZEBNIKÓW --- */
+    function polishPlural(value, one, few, many) {
+      const v = Math.abs(Math.floor(value));
+      if (v === 1) return one;
+      const mod10 = v % 10;
+      const mod100 = v % 100;
+      if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) {
+        return few;
+      }
+      return many;
+    }
+
+    function formatDays(days) {
+      return days + " " + polishPlural(days, "dzień", "dni", "dni");
+    }
+
+    function formatHours(hours) {
+      return hours + " " + polishPlural(hours, "godzina", "godziny", "godzin");
+    }
+
+    function formatMinutes(minutes) {
+      return minutes + " " + polishPlural(minutes, "minuta", "minuty", "minut");
+    }
+
+    /* --- PAMIĘĆ LOKALNA (LOCALSTORAGE) --- */
+    const STORAGE_KEY = "nowystart_eink_data_v1";
+
+    function defaultData() {
+      const now = new Date();
+      const threeDaysAgo = new Date(now.getTime() - (3 * 86400000 + 4 * 3600000));
+      return {
+        schemaVersion: 1,
+        discreetMode: false,
+        trackers: [
+          {
+            id: "trk-" + Date.now(),
+            substanceKind: "alcohol",
+            customName: "Alkohol",
+            alias: "Zdrowy Rozsądek",
+            startDate: threeDaysAgo.toISOString(),
+            createdAt: threeDaysAgo.toISOString(),
+            dailyUnits: 3,
+            unitPrice: 15.0,
+            unitLabel: "drinki",
+            currencyCode: "PLN",
+            isArchived: false,
+            relapses: []
+          }
+        ],
+        checkIns: [
+          {
+            id: "chk-1",
+            date: new Date(now.getTime() - 86400000).toISOString(),
+            mood: 4,
+            craving: 2,
+            triggers: ["Zmęczenie"],
+            note: "Spokojny wieczór z herbatą."
+          }
+        ],
+        reasons: [
+          { id: "rsn-1", text: "Dla jasnego umysłu i dobrego snu każdego poranka." },
+          { id: "rsn-2", text: "Dla moich bliskich i wolności od przymusu." }
+        ],
+        supportContacts: [
+          { id: "cnt-1", name: "Zaufana osoba", phone: "123456789" }
+        ]
+      };
+    }
+
+    function loadAppState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          const init = defaultData();
+          saveAppState(init);
+          return init;
+        }
+        return JSON.parse(raw);
+      } catch (e) {
+        return defaultData();
+      }
+    }
+
+    function saveAppState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    let appState = loadAppState();
+
+    /* --- OBLICZENIA CZASU I KAMIEŃ MILOWY --- */
+    const MILESTONES_CATALOG = [
+      { id: "1h", title: "1 godzina", seconds: 3600 },
+      { id: "6h", title: "6 godzin", seconds: 6 * 3600 },
+      { id: "12h", title: "12 godzin", seconds: 12 * 3600 },
+      { id: "24h", title: "24 godziny", seconds: 24 * 3600 },
+      { id: "3d", title: "3 dni", seconds: 3 * 86400 },
+      { id: "7d", title: "7 dni (1 tydzień)", seconds: 7 * 86400 },
+      { id: "14d", title: "14 dni (2 tygodnie)", seconds: 14 * 86400 },
+      { id: "30d", title: "30 dni (1 miesiąc)", seconds: 30 * 86400 },
+      { id: "60d", title: "60 dni (2 miesiące)", seconds: 60 * 86400 },
+      { id: "90d", title: "90 dni (3 miesiące)", seconds: 90 * 86400 },
+      { id: "180d", title: "180 dni (pół roku)", seconds: 180 * 86400 },
+      { id: "270d", title: "270 dni (9 miesięcy)", seconds: 270 * 86400 },
+      { id: "1y", title: "1 rok", seconds: 365 * 86400 }
+    ];
+
+    function calculateElapsed(startDateIso) {
+      const start = new Date(startDateIso).getTime();
+      const now = Date.now();
+      const diffSec = Math.max(0, Math.floor((now - start) / 1000));
+      
+      const days = Math.floor(diffSec / 86400);
+      const hours = Math.floor((diffSec % 86400) / 3600);
+      const minutes = Math.floor((diffSec % 3600) / 60);
+
+      // Milestones
+      let nextMilestone = null;
+      let prevMilestoneSeconds = 0;
+      for (let m of MILESTONES_CATALOG) {
+        if (m.seconds > diffSec) {
+          nextMilestone = m;
+          break;
+        }
+        prevMilestoneSeconds = m.seconds;
+      }
+
+      let progress = 100;
+      if (nextMilestone) {
+        const span = nextMilestone.seconds - prevMilestoneSeconds;
+        const current = diffSec - prevMilestoneSeconds;
+        progress = Math.min(100, Math.max(0, Math.floor((current / span) * 100)));
+      }
+
+      return { diffSec, days, hours, minutes, nextMilestone, progress };
+    }
+
+    function calculateStreaks(tracker) {
+      const now = Date.now();
+      const currentStart = new Date(tracker.startDate).getTime();
+      const currentStreakSec = Math.max(0, Math.floor((now - currentStart) / 1000));
+      
+      let allStreaks = [currentStreakSec];
+      if (tracker.relapses) {
+        for (let r of tracker.relapses) {
+          const pStart = new Date(r.previousStart).getTime();
+          const rDate = new Date(r.restartedAt).getTime();
+          allStreaks.push(Math.max(0, Math.floor((rDate - pStart) / 1000)));
+        }
+      }
+
+      const longestSec = Math.max(...allStreaks);
+      const longestDays = Math.floor(longestSec / 86400);
+      const currentDays = Math.floor(currentStreakSec / 86400);
+      const restarts = (tracker.relapses || []).length;
+      const avgSec = allStreaks.reduce((a, b) => a + b, 0) / allStreaks.length;
+      const avgDays = (avgSec / 86400).toFixed(1);
+
+      return { currentDays, longestDays, restarts, avgDays };
+    }
+
+    /* --- RENDERING: LICZNIKI --- */
+    function renderTrackers() {
+      const container = document.getElementById("trackers-list");
+      container.innerHTML = "";
+
+      const active = appState.trackers.filter(t => !t.isArchived);
+      if (active.length === 0) {
+        container.innerHTML = `
+          <div class="card text-center" style="padding: 24px;">
+            <p style="font-weight:bold; font-size: 16px;">Brak aktywnych liczników</p>
+            <p style="font-size:13px; color:#444;">Każdy krok zaczyna się od jednej decyzji. Dodaj swój pierwszy licznik poniższym przyciskiem.</p>
+          </div>
+        `;
+        return;
+      }
+
+      active.forEach(tracker => {
+        const el = calculateElapsed(tracker.startDate);
+        const streaks = calculateStreaks(tracker);
+
+        let displayName = tracker.customName || SUBSTANCES[tracker.substanceKind]?.name || "Licznik";
+        if (appState.discreetMode) {
+          displayName = tracker.alias || "Licznik";
+        }
+
+        // Savings
+        let savingsHTML = "";
+        if (tracker.dailyUnits && tracker.unitPrice) {
+          const daysDecimal = el.diffSec / 86400;
+          const unitsAvoided = (tracker.dailyUnits * daysDecimal).toFixed(1);
+          const moneySaved = (unitsAvoided * tracker.unitPrice).toFixed(0);
+          savingsHTML = `
+            <div style="font-size: 12px; margin-top: 6px; border-top: 1px solid var(--border-thin); padding-top: 6px;">
+              Zaoszczędzone: <strong>${moneySaved} zł</strong> (${unitsAvoided} ${tracker.unitLabel} ominięte)
+            </div>
+          `;
+        }
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-header">
+            <h2 class="card-title">${displayName}</h2>
+            <span class="card-subtitle">Najdłuższa seria: ${formatDays(streaks.longestDays)}</span>
+          </div>
+
+          <div class="hero-number">${el.days}</div>
+          <div class="hero-unit">${polishPlural(el.days, "dzień", "dni", "dni")}</div>
+          <div class="time-subtext">${formatHours(el.hours)}, ${formatMinutes(el.minutes)}</div>
+
+          ${el.nextMilestone ? `
+            <div style="margin-top: 10px;">
+              <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+                <span>Kolejny cel: ${el.nextMilestone.title}</span>
+                <span>${el.progress}%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: ${el.progress}%"></div>
+              </div>
+            </div>
+          ` : ""}
+
+          ${savingsHTML}
+
+          <div class="btn-group">
+            <button class="btn btn-secondary btn-small" onclick="openRestartModal('${tracker.id}')">Nowy start</button>
+            <button class="btn btn-secondary btn-small" onclick="archiveTracker('${tracker.id}')">Archiwizuj</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    /* --- RENDERING: DZIENNIK I HEATMAPA --- */
+    function renderJournal() {
+      // Check-in streak
+      const loggedDays = new Set(appState.checkIns.map(c => c.date.split("T")[0]));
+      const streak = calculateJournalStreak(loggedDays);
+      document.getElementById("journal-streak-badge").innerText = streak + " " + polishPlural(streak, "dzień", "dni", "dni") + " z rzędu";
+
+      // Calendar heatmap for current month
+      const heatmap = document.getElementById("calendar-heatmap");
+      heatmap.innerHTML = "";
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const firstDayOfMonth = new Date(year, month, 1);
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      // Start day offset (Monday = 0)
+      let startOffset = firstDayOfMonth.getDay() - 1;
+      if (startOffset === -1) startOffset = 6;
+
+      for (let i = 0; i < startOffset; i++) {
+        const cell = document.createElement("div");
+        cell.className = "heatmap-day empty";
+        heatmap.appendChild(cell);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const cell = document.createElement("div");
+        cell.className = "heatmap-day";
+        cell.innerText = d;
+
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        if (loggedDays.has(dateStr)) {
+          cell.classList.add("logged");
+        }
+        if (d === now.getDate()) {
+          cell.classList.add("today");
+        }
+        heatmap.appendChild(cell);
+      }
+
+      // History list
+      const list = document.getElementById("journal-history-list");
+      list.innerHTML = "";
+      if (appState.checkIns.length === 0) {
+        list.innerHTML = "<p style='font-size:13px; color:#555;'>Brak wpisów.</p>";
+        return;
+      }
+
+      const sorted = [...appState.checkIns].sort((a, b) => new Date(b.date) - new Date(a.date));
+      sorted.slice(0, 10).forEach(item => {
+        const row = document.createElement("div");
+        row.style.borderBottom = "1px solid var(--border-thin)";
+        row.style.padding = "8px 0";
+        row.innerHTML = `
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+            <span>${item.date.split("T")[0]}</span>
+            <span>Nastrój: ${item.mood}/5 | Ochota: ${item.craving}/10</span>
+          </div>
+          ${item.triggers && item.triggers.length > 0 ? `<div style="font-size:12px; margin-top:2px;">Wyzwalacze: ${item.triggers.join(", ")}</div>` : ""}
+          ${item.note ? `<div style="font-size:13px; margin-top:2px;">${item.note}</div>` : ""}
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function calculateJournalStreak(loggedDaysSet) {
+      let streak = 0;
+      let checkDate = new Date();
+      const formatDate = d => d.toISOString().split("T")[0];
+
+      if (!loggedDaysSet.has(formatDate(checkDate))) {
+        checkDate.setDate(checkDate.getDate() - 1);
+        if (!loggedDaysSet.has(formatDate(checkDate))) {
+          return 0;
+        }
+      }
+
+      while (loggedDaysSet.has(formatDate(checkDate))) {
+        streak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      }
+      return streak;
+    }
+
+    /* --- RENDERING: STATYSTYKI --- */
+    function renderStats() {
+      let longestOverall = 0;
+      let currentOverall = 0;
+      let totalRestarts = 0;
+      let totalSavings = 0;
+      let totalMilestones = 0;
+
+      appState.trackers.forEach(t => {
+        const s = calculateStreaks(t);
+        if (s.longestDays > longestOverall) longestOverall = s.longestDays;
+        if (!t.isArchived && s.currentDays > currentOverall) currentOverall = s.currentDays;
+        totalRestarts += s.restarts;
+
+        if (t.dailyUnits && t.unitPrice) {
+          const el = calculateElapsed(t.startDate);
+          const daysDec = el.diffSec / 86400;
+          totalSavings += (t.dailyUnits * daysDec * t.unitPrice);
+        }
+
+        const el = calculateElapsed(t.startDate);
+        MILESTONES_CATALOG.forEach(m => {
+          if (m.seconds <= el.diffSec) totalMilestones++;
+        });
+      });
+
+      const uniqueJournalDays = new Set(appState.checkIns.map(c => c.date.split("T")[0])).size;
+
+      document.getElementById("stats-longest-streak").innerText = longestOverall + " d";
+      document.getElementById("stats-current-streak").innerText = currentOverall + " d";
+      document.getElementById("stats-restarts-count").innerText = totalRestarts;
+      document.getElementById("stats-savings-total").innerText = Math.floor(totalSavings) + " zł";
+      document.getElementById("stats-journal-days").innerText = uniqueJournalDays;
+      document.getElementById("stats-milestones-total").innerText = totalMilestones;
+
+      // Milestone list
+      const mList = document.getElementById("stats-milestones-list");
+      mList.innerHTML = "";
+      const primaryTracker = appState.trackers.find(t => !t.isArchived);
+      if (primaryTracker) {
+        const el = calculateElapsed(primaryTracker.startDate);
+        MILESTONES_CATALOG.forEach(m => {
+          const reached = m.seconds <= el.diffSec;
+          const item = document.createElement("div");
+          item.style.display = "flex";
+          item.style.justifyContent = "space-between";
+          item.style.fontSize = "13px";
+          item.style.padding = "4px 0";
+          item.style.borderBottom = "1px solid var(--border-thin)";
+          item.innerHTML = `
+            <span>${reached ? "[x]" : "[ ]"} ${m.title}</span>
+            <span style="font-weight:bold;">${reached ? "Osiągnięto" : "W drodze"}</span>
+          `;
+          mList.appendChild(item);
+        });
+      }
+    }
+
+    /* --- RENDERING: USTAWIENIA, POWODY I KONTAKTY --- */
+    function renderSettings() {
+      document.getElementById("setting-discreet-mode").checked = !!appState.discreetMode;
+
+      // Reasons
+      const rContainer = document.getElementById("reasons-management-list");
+      rContainer.innerHTML = "";
+      appState.reasons.forEach((r, idx) => {
+        const div = document.createElement("div");
+        div.style.display = "flex";
+        div.style.justifyContent = "space-between";
+        div.style.fontSize = "13px";
+        div.style.padding = "4px 0";
+        div.innerHTML = `
+          <span>- ${r.text}</span>
+          <button class="btn btn-secondary btn-small" style="padding:2px 6px;" onclick="deleteReason(${idx})">Usuń</button>
+        `;
+        rContainer.appendChild(div);
+      });
+
+      // Contacts
+      const cContainer = document.getElementById("contacts-management-list");
+      cContainer.innerHTML = "";
+      appState.supportContacts.forEach((c, idx) => {
+        const div = document.createElement("div");
+        div.style.display = "flex";
+        div.style.justifyContent = "space-between";
+        div.style.fontSize = "13px";
+        div.style.padding = "4px 0";
+        div.innerHTML = `
+          <span>- ${c.name} (${c.phone})</span>
+          <button class="btn btn-secondary btn-small" style="padding:2px 6px;" onclick="deleteContact(${idx})">Usuń</button>
+        `;
+        cContainer.appendChild(div);
+      });
+
+      // SOS Quick Contact button
+      const sosContactBox = document.getElementById("sos-quick-contact-container");
+      sosContactBox.innerHTML = "";
+      if (appState.supportContacts.length > 0) {
+        const first = appState.supportContacts[0];
+        sosContactBox.innerHTML = `
+          <a href="tel:${first.phone}" class="btn" style="background:#ffffff; color:#000000; border:2px solid #000000;">
+            Zadzwoń do bliskiej osoby: ${first.name}
+          </a>
+        `;
+      }
+    }
+
+    /* --- TAB SWITCHING --- */
+    function switchTab(tabId) {
+      document.querySelectorAll("nav.tabs button").forEach(b => b.classList.remove("active"));
+      event.target.classList.add("active");
+
+      document.querySelectorAll("section[id^='tab-']").forEach(s => s.classList.add("hidden"));
+      document.getElementById("tab-" + tabId).classList.remove("hidden");
+
+      if (tabId === "trackers") renderTrackers();
+      if (tabId === "journal") renderJournal();
+      if (tabId === "sos") refreshSOSReason();
+      if (tabId === "stats") renderStats();
+      if (tabId === "settings") renderSettings();
+    }
+
+    /* --- SOS TIMER & ODDYCHANIE 4-4-4-4 --- */
+    let sosSecondsRemaining = 600;
+    let sosTimerInterval = null;
+    let breathingInterval = null;
+    let breathingPhaseIdx = 0;
+    let breathingSec = 1;
+    const breathingPhases = ["Wdech", "Zatrzymaj", "Wydech", "Zatrzymaj"];
+
+    function toggleSOSTimer() {
+      const btn = document.getElementById("sos-start-pause-btn");
+      if (sosTimerInterval) {
+        clearInterval(sosTimerInterval);
+        clearInterval(breathingInterval);
+        sosTimerInterval = null;
+        breathingInterval = null;
+        btn.innerText = "Wznów odliczanie";
+      } else {
+        btn.innerText = "Wstrzymaj";
+        sosTimerInterval = setInterval(() => {
+          if (sosSecondsRemaining > 0) {
+            sosSecondsRemaining--;
+            const m = Math.floor(sosSecondsRemaining / 60);
+            const s = sosSecondsRemaining % 60;
+            document.getElementById("sos-timer-display").innerText = 
+              `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+          } else {
+            clearInterval(sosTimerInterval);
+            clearInterval(breathingInterval);
+            openSOSFinishedModal();
+          }
+        }, 1000);
+
+        breathingInterval = setInterval(() => {
+          if (breathingSec < 4) {
+            breathingSec++;
+          } else {
+            breathingSec = 1;
+            breathingPhaseIdx = (breathingPhaseIdx + 1) % breathingPhases.length;
+          }
+          document.getElementById("breathing-phase-text").innerText = breathingPhases[breathingPhaseIdx];
+          document.getElementById("breathing-seconds-text").innerText = breathingSec + " / 4";
+        }, 1000);
+      }
+    }
+
+    function resetSOSTimer() {
+      if (sosTimerInterval) {
+        clearInterval(sosTimerInterval);
+        clearInterval(breathingInterval);
+        sosTimerInterval = null;
+        breathingInterval = null;
+      }
+      sosSecondsRemaining = 600;
+      document.getElementById("sos-timer-display").innerText = "10:00";
+      document.getElementById("sos-start-pause-btn").innerText = "Rozpocznij odliczanie";
+      breathingPhaseIdx = 0;
+      breathingSec = 1;
+      document.getElementById("breathing-phase-text").innerText = "Wdech";
+      document.getElementById("breathing-seconds-text").innerText = "1 / 4";
+    }
+
+    function refreshSOSReason() {
+      if (appState.reasons && appState.reasons.length > 0) {
+        const rand = appState.reasons[Math.floor(Math.random() * appState.reasons.length)];
+        document.getElementById("sos-random-reason").innerText = `"${rand.text}"`;
+      }
+    }
+
+    /* --- AKCJE MODALI --- */
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("active");
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add("active");
+    }
+
+    function openAddTrackerModal() {
+      document.getElementById("add-start-date").value = new Date().toISOString().slice(0, 16);
+      document.getElementById("add-custom-name").value = "";
+      document.getElementById("add-alias").value = "";
+      document.getElementById("add-daily-units").value = "";
+      document.getElementById("add-unit-price").value = "";
+      document.getElementById("add-initial-reason").value = "";
+      onSubstanceChange(document.getElementById("add-substance-kind").value);
+      openModal("modal-add-tracker");
+    }
+
+    function onSubstanceChange(kind) {
+      const info = SUBSTANCES[kind] || SUBSTANCES.other;
+      document.getElementById("add-units-label").innerText = `Zużycie dziennie w ${info.unit} (opcjonalnie):`;
+      const warningBox = document.getElementById("add-medical-warning");
+      if (info.warning) {
+        warningBox.classList.remove("hidden");
+      } else {
+        warningBox.classList.add("hidden");
+      }
+    }
+
+    function setAddDateNow() {
+      document.getElementById("add-start-date").value = new Date().toISOString().slice(0, 16);
+    }
+
+    function setAddDateTodayMorning() {
+      const d = new Date();
+      d.setHours(8, 0, 0, 0);
+      document.getElementById("add-start-date").value = d.toISOString().slice(0, 16);
+    }
+
+    function setAddDateYesterday() {
+      const d = new Date(Date.now() - 86400000);
+      document.getElementById("add-start-date").value = d.toISOString().slice(0, 16);
+    }
+
+    function saveNewTracker() {
+      const kind = document.getElementById("add-substance-kind").value;
+      const customName = document.getElementById("add-custom-name").value.trim();
+      const alias = document.getElementById("add-alias").value.trim();
+      const startDateVal = document.getElementById("add-start-date").value;
+      const dailyUnits = parseFloat(document.getElementById("add-daily-units").value) || null;
+      const unitPrice = parseFloat(document.getElementById("add-unit-price").value) || null;
+      const initialReason = document.getElementById("add-initial-reason").value.trim();
+
+      if (!startDateVal) {
+        alert("Wybierz datę rozpoczęcia.");
+        return;
+      }
+
+      const tracker = {
+        id: "trk-" + Date.now(),
+        substanceKind: kind,
+        customName: customName || null,
+        alias: alias || null,
+        startDate: new Date(startDateVal).toISOString(),
+        createdAt: new Date().toISOString(),
+        dailyUnits: dailyUnits,
+        unitPrice: unitPrice,
+        unitLabel: SUBSTANCES[kind]?.unit || "jednostki",
+        currencyCode: "PLN",
+        isArchived: false,
+        relapses: []
+      };
+
+      appState.trackers.push(tracker);
+
+      if (initialReason) {
+        appState.reasons.push({ id: "rsn-" + Date.now(), text: initialReason });
+      }
+
+      saveAppState(appState);
+      closeModal("modal-add-tracker");
+      renderTrackers();
+    }
+
+    /* --- RESTART SERII (NOWY START) --- */
+    let currentRestartTrackerId = null;
+
+    function openRestartModal(trackerId) {
+      currentRestartTrackerId = trackerId;
+      const tracker = appState.trackers.find(t => t.id === trackerId);
+      if (!tracker) return;
+
+      const s = calculateStreaks(tracker);
+      document.getElementById("restart-longest-streak-anchor").innerText = 
+        `Najdłuższa seria: ${formatDays(s.longestDays)}`;
+
+      document.getElementById("restart-date").value = new Date().toISOString().slice(0, 16);
+      document.getElementById("restart-note").value = "";
+
+      const chipsBox = document.getElementById("restart-triggers-chips");
+      chipsBox.innerHTML = "";
+      COMMON_TRIGGERS.forEach(t => {
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.innerText = t;
+        chip.onclick = () => chip.classList.toggle("selected");
+        chipsBox.appendChild(chip);
+      });
+
+      openModal("modal-restart");
+    }
+
+    function saveRestart() {
+      const tracker = appState.trackers.find(t => t.id === currentRestartTrackerId);
+      if (!tracker) return;
+
+      const restartDateVal = document.getElementById("restart-date").value;
+      const note = document.getElementById("restart-note").value.trim();
+      const selectedTriggers = Array.from(document.querySelectorAll("#restart-triggers-chips .chip.selected"))
+        .map(c => c.innerText);
+
+      const relapse = {
+        id: "rel-" + Date.now(),
+        previousStart: tracker.startDate,
+        restartedAt: new Date(restartDateVal).toISOString(),
+        note: note || null,
+        triggers: selectedTriggers
+      };
+
+      if (!tracker.relapses) tracker.relapses = [];
+      tracker.relapses.push(relapse);
+      tracker.startDate = new Date(restartDateVal).toISOString();
+
+      saveAppState(appState);
+      closeModal("modal-restart");
+      renderTrackers();
+    }
+
+    function archiveTracker(id) {
+      if (confirm("Czy na pewno chcesz przenieść ten licznik do archiwum?")) {
+        const tracker = appState.trackers.find(t => t.id === id);
+        if (tracker) {
+          tracker.isArchived = true;
+          saveAppState(appState);
+          renderTrackers();
+        }
+      }
+    }
+
+    /* --- DZIENNY CHECK-IN --- */
+    function openCheckInModal() {
+      document.getElementById("checkin-mood").value = "3";
+      document.getElementById("checkin-craving").value = "2";
+      document.getElementById("checkin-craving-val").innerText = "2";
+      document.getElementById("checkin-note").value = "";
+
+      const chipsBox = document.getElementById("checkin-triggers-chips");
+      chipsBox.innerHTML = "";
+      COMMON_TRIGGERS.forEach(t => {
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.innerText = t;
+        chip.onclick = () => chip.classList.toggle("selected");
+        chipsBox.appendChild(chip);
+      });
+
+      openModal("modal-checkin");
+    }
+
+    function saveCheckIn() {
+      const mood = parseInt(document.getElementById("checkin-mood").value);
+      const craving = parseInt(document.getElementById("checkin-craving").value);
+      const note = document.getElementById("checkin-note").value.trim();
+      const triggers = Array.from(document.querySelectorAll("#checkin-triggers-chips .chip.selected"))
+        .map(c => c.innerText);
+
+      const entry = {
+        id: "chk-" + Date.now(),
+        date: new Date().toISOString(),
+        mood: mood,
+        craving: craving,
+        triggers: triggers,
+        note: note || null
+      };
+
+      appState.checkIns.push(entry);
+      saveAppState(appState);
+      closeModal("modal-checkin");
+      renderJournal();
+    }
+
+    /* --- SOS FINISH --- */
+    function openSOSFinishedModal() {
+      openModal("modal-sos-finish");
+    }
+
+    function saveSOSFinish() {
+      const postCraving = parseInt(document.getElementById("sos-post-craving").value);
+      const entry = {
+        id: "chk-" + Date.now(),
+        date: new Date().toISOString(),
+        mood: 3,
+        craving: postCraving,
+        triggers: ["Sesja SOS"],
+        note: "Wpis po ukończeniu 10-minutowego wsparcia SOS."
+      };
+      appState.checkIns.push(entry);
+      saveAppState(appState);
+      closeModal("modal-sos-finish");
+      resetSOSTimer();
+      alert("Zapisano wpis w dzienniku. Każda przetrwana fala ochoty to kolejny krok do przodu.");
+      switchTab("journal");
+    }
+
+    /* --- USTAWIENIA, EKSPORT I IMPORT --- */
+    function toggleDiscreetMode(checked) {
+      appState.discreetMode = checked;
+      saveAppState(appState);
+      renderTrackers();
+    }
+
+    function addNewReasonFromSettings() {
+      const input = document.getElementById("new-reason-input");
+      const text = input.value.trim();
+      if (!text) return;
+      appState.reasons.push({ id: "rsn-" + Date.now(), text: text });
+      input.value = "";
+      saveAppState(appState);
+      renderSettings();
+    }
+
+    function deleteReason(idx) {
+      appState.reasons.splice(idx, 1);
+      saveAppState(appState);
+      renderSettings();
+    }
+
+    function addNewContactFromSettings() {
+      const name = document.getElementById("new-contact-name").value.trim();
+      const phone = document.getElementById("new-contact-phone").value.trim();
+      if (!name || !phone) return;
+      appState.supportContacts.push({ id: "cnt-" + Date.now(), name: name, phone: phone });
+      document.getElementById("new-contact-name").value = "";
+      document.getElementById("new-contact-phone").value = "";
+      saveAppState(appState);
+      renderSettings();
+    }
+
+    function deleteContact(idx) {
+      appState.supportContacts.splice(idx, 1);
+      saveAppState(appState);
+      renderSettings();
+    }
+
+    function exportBackupJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `NowyStart_Kopia_${new Date().toISOString().split("T")[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function importBackupJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!imported.schemaVersion || !Array.isArray(imported.trackers)) {
+            alert("Nieprawidłowy format pliku kopii zapasowej.");
+            return;
+          }
+          if (confirm("Zastąpić obecne dane wgraną kopią zapasową?")) {
+            appState = imported;
+            saveAppState(appState);
+            renderTrackers();
+            renderSettings();
+            alert("Kopia zapasowa wczytana pomyślnie!");
+          }
+        } catch (err) {
+          alert("Błąd podczas odczytu pliku JSON: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Odświeżanie minutowe widoku (brak ciągłego tykania co sekundę dla E-Ink)
+    setInterval(() => {
+      const trackersSection = document.getElementById("tab-trackers");
+      if (!trackersSection.classList.contains("hidden")) {
+        renderTrackers();
+      }
+    }, 60000);
+
+    // Initial render
+    renderTrackers();
+  </script>
+</body>
+</html>
