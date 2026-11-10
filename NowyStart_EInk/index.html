@@ -452,6 +452,19 @@
     <!-- TAB 2: DZIENNIK                           -->
     <!-- ========================================== -->
     <section id="tab-journal" class="hidden">
+      <!-- Rytuał Stoicki Marcus Aurelius -->
+      <div class="card" style="border: 2px solid var(--border); margin-bottom: 12px;">
+        <div class="card-header">
+          <h2 class="card-title">Rytuał Stoicki (Marcus Aurelius)</h2>
+          <span class="card-subtitle">100% Offline</span>
+        </div>
+        <p style="font-size:13px; margin:0 0 10px 0;">Poranna odprawa (dychotomia kontroli i intencja) oraz wieczorny rachunek sumienia wg 3 pytań Seneki i Marka Aureliusza.</p>
+        <div class="btn-group">
+          <button class="btn btn-small" style="font-weight:bold; background:#000000; color:#ffffff;" onclick="openStoicMorningModal()">Ranna odprawa (60s)</button>
+          <button class="btn btn-small" style="font-weight:bold;" onclick="openStoicEveningModal()">Wieczorny rachunek sumienia</button>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-header">
           <h2 class="card-title">Dzienny zapis uważności</h2>
@@ -547,6 +560,62 @@
           <button class="btn btn-secondary btn-small" onclick="nextMotivationThought()">Inna myśl</button>
         </div>
         <div id="daily-thought-text" style="font-size: 15px; font-weight: 500; line-height: 1.5; margin: 6px 0;"></div>
+      </div>
+
+            <!-- Siatka Życia (Memento Mori) -->
+      <div class="card" style="border: 2px solid var(--border); margin-bottom: 14px;">
+        <div class="card-header">
+          <h2 class="card-title">Siatka Życia (Memento Mori)</h2>
+          <button class="btn btn-secondary btn-small" onclick="toggleLifeGridConfig()">Ustawienia</button>
+        </div>
+        <p style="font-size:13px; color:#444; margin:0 0 8px 0;">
+          Twoje całe życie w perspektywie 4000 tygodni (80 lat × 52 tygodnie). Każdy kwadrat to jeden tydzień.
+        </p>
+
+        <div id="life-grid-config-box" class="hidden mb-2" style="border:1px dashed var(--border); padding:8px;">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label style="font-size:12px;">Rok urodzenia:
+              <input type="number" id="life-grid-birth-year" min="1930" max="2026" value="1995" style="width:85px; padding:4px;">
+            </label>
+            <label style="font-size:12px;">Horyzont (lata):
+              <input type="number" id="life-grid-target-age" min="50" max="100" value="80" style="width:70px; padding:4px;">
+            </label>
+            <button class="btn btn-small" onclick="saveLifeGridConfig()">Zapisz</button>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-bottom:8px;">
+          <div class="stat-box" style="padding:6px;">
+            <div class="stat-box-title">Przeżyte tygodnie</div>
+            <div class="stat-box-value" id="life-grid-weeks-lived" style="font-size:16px;">-</div>
+          </div>
+          <div class="stat-box" style="padding:6px;">
+            <div class="stat-box-title">W trzeźwości</div>
+            <div class="stat-box-value" id="life-grid-weeks-sober" style="font-size:16px;">-</div>
+          </div>
+          <div class="stat-box" style="padding:6px;">
+            <div class="stat-box-title">Przed Tobą</div>
+            <div class="stat-box-value" id="life-grid-weeks-left" style="font-size:16px;">-</div>
+          </div>
+          <div class="stat-box" style="padding:6px;">
+            <div class="stat-box-title">Wykorzystano</div>
+            <div class="stat-box-value" id="life-grid-pct-lived" style="font-size:16px;">-</div>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto; background:#ffffff; border:1px solid var(--border); padding:6px; text-align:center;">
+          <div id="life-grid-svg-slot"></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-around; font-size:11px; margin-top:6px; color:#333;">
+          <span>[■] Przeżyte tygodnie</span>
+          <span>[•] Czas w trzeźwości</span>
+          <span>[□] Tygodnie przed Tobą</span>
+        </div>
+
+        <div class="disclaimer-box" style="margin-top:8px; font-size:12px; font-style:italic;">
+          "Nie otrzymujemy życia krótkim, lecz sami je takim czynimy. Nie jesteśmy w nie ubodzy, lecz rozrzutni." — Seneka
+        </div>
       </div>
 
       <!-- Twoje Osobiste Powody -->
@@ -774,7 +843,91 @@
   <!-- ========================================== -->
   <!-- MODAL: NOWY START (RESTART SERII)         -->
   <!-- ========================================== -->
-    <!-- ========================================== -->
+      <!-- ========================================== -->
+  <!-- MODAL: PORANNA ODPRAWA STOICKA            -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="modal-stoic-morning">
+    <div class="modal-box">
+      <h2>Poranna Odprawa Stoicka</h2>
+      <p style="font-size:13px; color:#444; margin-bottom: 10px;">
+        Przygotuj umysł przed wejściem w dzień. Trzeźwość to dyscyplina osądu.
+      </p>
+
+      <div class="card mb-2" style="background:#fcfcfc; border:1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="card-subtitle" id="stoic-morning-author" style="font-weight:bold;">Marek Aureliusz</span>
+          <button class="btn btn-secondary btn-small" style="padding:1px 6px; font-size:11px;" onclick="nextStoicMeditation()">Inna lekcja</button>
+        </div>
+        <div id="stoic-morning-quote" style="font-size:14px; font-style:italic; margin:6px 0; line-height:1.4;">...</div>
+        <div id="stoic-morning-takeaway" style="font-size:12px; color:#333; font-weight:bold;">...</div>
+      </div>
+
+      <div class="form-group">
+        <label>1. Moja intencja i zasada przewodnia na dzisiaj:</label>
+        <input type="text" id="stoic-morning-intention" placeholder="np. Spokój w trudnych rozmowach / Uważność...">
+      </div>
+
+      <div class="form-group">
+        <label>2. Dychotomia kontroli – co puszczam wolno (nie zależy ode mnie)?</label>
+        <input type="text" id="stoic-morning-dichotomy" placeholder="np. Zachowanie szefa, pogoda, cudze opinie...">
+      </div>
+
+      <div class="form-group">
+        <label>3. Plan obrony w razie pojawienia się pokusy lub stresu:</label>
+        <textarea id="stoic-morning-defense" placeholder="Gdy poczuję napięcie: 10 głębokich oddechów, woda, 15 minut spaceru..."></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="closeModal('modal-stoic-morning')">Anuluj</button>
+        <button class="btn" style="background:#000000; color:#ffffff; font-weight:bold;" onclick="saveStoicMorning()">Zatwierdź odprawę i zacznij dzień</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: WIECZORNY RACHUNEK SUMIENIA        -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="modal-stoic-evening">
+    <div class="modal-box">
+      <h2>Wieczorny Rachunek Sumienia</h2>
+      <p style="font-size:12px; font-style:italic; margin-bottom: 12px; color:#333;">
+        "Kiedy gasną światła, badam cały swój dzień i analizuję swoje czyny i słowa; niczego przed sobą nie ukrywam, niczego nie pomijam." — Seneka
+      </p>
+
+      <div class="form-group">
+        <label>1. W czym zachowałem dziś dyscyplinę i spokój umysłu?</label>
+        <textarea id="stoic-evening-q1" placeholder="Z czego jestem zadowolony? Gdzie postawiłem granicę?"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>2. Gdzie uległem impulsowi, złości, pośpiechowi lub pokusie?</label>
+        <textarea id="stoic-evening-q2" placeholder="Szczera prawda o trudnym momencie (bez oceniania siebie)..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>3. Czego to uczy na jutrzejszy poranek?</label>
+        <input type="text" id="stoic-evening-q3" placeholder="Jedna konkretna lekcja na jutro...">
+      </div>
+
+      <div class="form-group">
+        <label>Ocena dzisiejszego nastroju (1 - 5):</label>
+        <select id="stoic-evening-mood">
+          <option value="1">1 - Trudny / ciężki</option>
+          <option value="2">2 - Obniżony</option>
+          <option value="3" selected>3 - Spokojny / neutralny</option>
+          <option value="4">4 - Dobry / stabilny</option>
+          <option value="5">5 - Bardzo dobry / jasny umysł</option>
+        </select>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="closeModal('modal-stoic-evening')">Anuluj</button>
+        <button class="btn" style="background:#000000; color:#ffffff; font-weight:bold;" onclick="saveStoicEvening()">Zapisz rachunek sumienia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
   <!-- MODAL: ZŁAMANIE POSTANOWIENIA (RELAPSE)   -->
   <!-- ========================================== -->
   <div class="modal-overlay" id="modal-relapse">
@@ -963,7 +1116,300 @@
       other: { name: "Inne", unit: "jednostki", warning: false }
     };
 
-        /* --- KATALOG KAR NAPRAWCZYCH (SYSTEM ZADOŚĆUCZYNIENIA I DYSCYPLINY) --- */
+            /* --- BAZA MEDYTACJI STOICKICH (MARCUS AURELIUS & SENEKA & EPIKTET) --- */
+    const STOIC_MEDITATIONS = [
+      {
+        author: "Marek Aureliusz",
+        work: "Rozmyślania, V.1",
+        quote: "Rano, gdy budzisz się z ociąganiem, miej w pogotowiu tę myśl: 'Wstaję do pracy człowieka. Czy mam narzekać, że idę robić to, po co zostałem stworzony?'",
+        takeaway: "Każdy trzeźwy poranek to przywrócenie Twojego człowieczeństwa i wolności wyboru."
+      },
+      {
+        author: "Seneka",
+        work: "Listy do Lucyliusza, CXIII",
+        quote: "Najpotężniejszy jest ten, kto ma władzę nad samym sobą.",
+        takeaway: "Zrezygnowanie z chwilowej ulgi na rzecz panowania nad sobą to najwyższy dowód siły."
+      },
+      {
+        author: "Epiktet",
+        work: "Encheiridion, I.1",
+        quote: "Z rzeczy, które istnieją, jedne są od nas zależne, inne nie. Od nas zależą: sąd, popęd, chęć i wstręt. Nie zależą: opinie innych, przeszłość i to, co poza naszą wolą.",
+        takeaway: "Nie masz wpływu na nadejście impulsu. Masz 100% wpływu na to, czy za nim podążysz."
+      },
+      {
+        author: "Marek Aureliusz",
+        work: "Rozmyślania, IV.49",
+        quote: "Bądź jak skała, o którą fale bezustannie się rozbijają. Ona stoi niewzruszona, a wokół niej cichnie wrząca piana.",
+        takeaway: "Fala ochoty wzburza się i opada w 15 minut. Jeśli stoisz niewzruszony, fala minie."
+      },
+      {
+        author: "Seneka",
+        work: "O krótkości życia, I",
+        quote: "Nie mamy za mało czasu, ale zbyt wiele go marnujemy. Życie jest wystarczająco długie, by dokonać wielkich rzeczy, jeśli jest dobrze zagospodarowane.",
+        takeaway: "Kac, zjazdy i poczucie winy kradną całe lata. Czystość oddaje Ci Twój czas z powrotem."
+      },
+      {
+        author: "Epiktet",
+        work: "Encheiridion, XXXIV",
+        quote: "Gdy pojawi się silna pokusa przyjemności, powstrzymaj się na chwilę i pomyśl o dwóch momentach: tym, w którym będziesz ulegał, i tym późniejszym, gdy będziesz żałował.",
+        takeaway: "Zawsze patrz na poranek po użyciu. Zobacz konsekwencje zanim zrobisz krok."
+      },
+      {
+        author: "Marek Aureliusz",
+        work: "Rozmyślania, VII.28",
+        quote: "Wycofaj się w głąb samego siebie. Wewnętrzne Ja ma w naturze spokój, bylebyś czynił to, co prawe i rozumne.",
+        takeaway: "Cisza i brak substancji mogą na początku wydawać się pustką. W rzeczywistości to fundament spokoju."
+      },
+      {
+        author: "Seneka",
+        work: "Listy do Lucyliusza, XIII",
+        quote: "Częściej cierpimy w wyobraźni niż w rzeczywistości.",
+        takeaway: "Lęk przed tym, jak wytrzymasz bez używki w stresie, jest niemal zawsze gorszy niż rzeczywistość."
+      },
+      {
+        author: "Epiktet",
+        work: "Diatryby, II.18",
+        quote: "Każdy nawyk wzmacnia się przez odpowiadające mu czynności. Jeśli nie chcesz czegoś robić, nie czyń tego. Przerwij ciąg chociaż na jeden dzień, a zyskasz przewagę.",
+        takeaway: "Każde 'nie' wypowiedziane impulsowi fizycznie przebudowuje ścieżki neuronowe w Twoim mózgu."
+      },
+      {
+        author: "Marek Aureliusz",
+        work: "Rozmyślania, IV.7",
+        quote: "Usuń mniemanie, a usunie się i poczucie krzywdy. Usuń poczucie krzywdy, a krzywda znika.",
+        takeaway: "Gdy ktoś Cię zirytuje, to nie on zmusza Cię do sięgnięcia po substancję, lecz Twoja własna interpretacja."
+      },
+      {
+        author: "Seneka",
+        work: "O gniewie, III.36",
+        quote: "Kiedy gasną światła, badam cały swój dzień i analizuję swoje czyny i słowa; niczego przed sobą nie ukrywam, niczego nie pomijam. Kto pyta siebie: 'Czym dziś przezwyciężyłem swoją słabość?', ten zasypia spokojnie.",
+        takeaway: "Wieczorny rachunek sumienia to nie kara, lecz najczystszy akt higieny psychicznej."
+      },
+      {
+        author: "Marek Aureliusz",
+        work: "Rozmyślania, VII.8",
+        quote: "Nigdy nie pozwól, by przyszłość cię trwożyła. Spotkasz się z nią z tą samą bronią rozsądku, którą dziś walczysz z teraźniejszością.",
+        takeaway: "Nie musisz planować trzeźwości na 5 lat w przód. Wystarczy, że wygrasz dzisiejszy dzień."
+      },
+      {
+        author: "Epiktet",
+        work: "Diatryby, I.24",
+        quote: "Trudności ukazują, jakimi ludźmi jesteśmy. Gdy napotkasz przeszkodę, pamiętaj, że los jak trener zapasów zestawił cię z twardym przeciwnikiem.",
+        takeaway: "Ciężki dzień bez ucieczki w znieczulenie to najszybszy trening Twojego charakteru."
+      },
+      {
+        author: "Seneka",
+        work: "Listy do Lucyliusza, CI",
+        quote: "Przeżyj ten dzień tak, jakby był Twoim ostatnim – nie w pośpiechu i rozpaczy, lecz z pełnym opanowaniem i wdzięcznością.",
+        takeaway: "Życie w trzeźwości pozwala doświadczać każdego dnia w pełnej ostrości zmysłów."
+      },
+      {
+        author: "Marek Aureliusz",
+        work: "Rozmyślania, II.4",
+        quote: "Pamiętaj, jak długo już odkładasz te sprawy na później i ile razy otrzymałeś od losu szansę, z której nie skorzystałeś. Czas twój ma wyznaczoną granicę.",
+        takeaway: "Koniec z czekaniem na 'idealny moment'. Prawdziwe życie zaczyna się tu i teraz."
+      }
+    ];
+
+    let currentStoicIdx = 0;
+
+    function getStoicMeditationForToday() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const oneDay = 1000 * 60 * 60 * 24;
+      const dayOfYear = Math.floor(diff / oneDay);
+      return STOIC_MEDITATIONS[(dayOfYear + currentStoicIdx) % STOIC_MEDITATIONS.length];
+    }
+
+    function nextStoicMeditation() {
+      currentStoicIdx = (currentStoicIdx + 1) % STOIC_MEDITATIONS.length;
+      updateStoicMorningUI();
+    }
+
+    function updateStoicMorningUI() {
+      const med = getStoicMeditationForToday();
+      const authEl = document.getElementById("stoic-morning-author");
+      const quoteEl = document.getElementById("stoic-morning-quote");
+      const takeEl = document.getElementById("stoic-morning-takeaway");
+      if (authEl) authEl.innerText = `${med.author} (${med.work})`;
+      if (quoteEl) quoteEl.innerText = `"${med.quote}"`;
+      if (takeEl) takeEl.innerText = `Klucz: ${med.takeaway}`;
+    }
+
+    function openStoicMorningModal() {
+      updateStoicMorningUI();
+      document.getElementById("stoic-morning-intention").value = "";
+      document.getElementById("stoic-morning-dichotomy").value = "";
+      document.getElementById("stoic-morning-defense").value = "";
+      openModal("modal-stoic-morning");
+    }
+
+    function saveStoicMorning() {
+      const intention = document.getElementById("stoic-morning-intention").value.trim();
+      const dichotomy = document.getElementById("stoic-morning-dichotomy").value.trim();
+      const defense = document.getElementById("stoic-morning-defense").value.trim();
+      const med = getStoicMeditationForToday();
+
+      appState.checkIns.push({
+        id: "chk-morn-" + Date.now(),
+        date: new Date().toISOString(),
+        isStoicMorning: true,
+        stoicAuthor: med.author,
+        stoicQuote: med.quote,
+        stoicIntention: intention || null,
+        stoicDichotomy: dichotomy || null,
+        stoicDefense: defense || null,
+        note: `[Odprawa] Intencja: ${intention || "Spokój"}. Puszczam wolno: ${dichotomy || "Brak"}`
+      });
+
+      saveAppState(appState);
+      closeModal("modal-stoic-morning");
+      renderJournal();
+      renderStats();
+    }
+
+    function openStoicEveningModal() {
+      document.getElementById("stoic-evening-q1").value = "";
+      document.getElementById("stoic-evening-q2").value = "";
+      document.getElementById("stoic-evening-q3").value = "";
+      document.getElementById("stoic-evening-mood").value = "3";
+      openModal("modal-stoic-evening");
+    }
+
+    function saveStoicEvening() {
+      const q1 = document.getElementById("stoic-evening-q1").value.trim();
+      const q2 = document.getElementById("stoic-evening-q2").value.trim();
+      const q3 = document.getElementById("stoic-evening-q3").value.trim();
+      const moodVal = parseInt(document.getElementById("stoic-evening-mood").value, 10) || 3;
+
+      appState.checkIns.push({
+        id: "chk-eve-" + Date.now(),
+        date: new Date().toISOString(),
+        isStoicEvening: true,
+        mood: moodVal,
+        q1Discipline: q1 || null,
+        q2Weakness: q2 || null,
+        q3Lesson: q3 || null,
+        note: `[Rachunek sumienia] Dyscyplina: ${q1 || "Zachowana"} | Słabość: ${q2 || "Brak"} | Lekcja: ${q3 || "-"}`
+      });
+
+      saveAppState(appState);
+      closeModal("modal-stoic-evening");
+      renderJournal();
+      renderStats();
+    }
+
+    /* --- SIATKA ŻYCIA (MEMENTO MORI) --- */
+    function toggleLifeGridConfig() {
+      const box = document.getElementById("life-grid-config-box");
+      if (box) box.classList.toggle("hidden");
+    }
+
+    function saveLifeGridConfig() {
+      const yVal = parseInt(document.getElementById("life-grid-birth-year").value, 10);
+      const aVal = parseInt(document.getElementById("life-grid-target-age").value, 10);
+      if (yVal >= 1930 && yVal <= 2026) appState.birthYear = yVal;
+      if (aVal >= 50 && aVal <= 100) appState.targetAge = aVal;
+      saveAppState(appState);
+      toggleLifeGridConfig();
+      renderLifeGrid();
+    }
+
+    function renderLifeGrid() {
+      const birthYear = appState.birthYear || 1995;
+      const targetAge = appState.targetAge || 80;
+      const totalWeeks = targetAge * 52;
+
+      const birthDate = new Date(birthYear, 0, 1);
+      const now = new Date();
+      const diffMs = now.getTime() - birthDate.getTime();
+      const weeksLived = Math.max(0, Math.floor(diffMs / (7 * 86400000)));
+      const weeksLeft = Math.max(0, totalWeeks - weeksLived);
+      const pctLived = Math.min(100, Math.round((weeksLived / totalWeeks) * 100));
+
+      // Calculate total sober weeks across trackers
+      let totalSoberSeconds = 0;
+      appState.trackers.forEach(t => {
+        if (!t.isArchived) {
+          const el = calculateElapsed(t.startDate);
+          totalSoberSeconds = Math.max(totalSoberSeconds, el.diffSec);
+        }
+      });
+      const soberWeeks = Math.floor(totalSoberSeconds / (7 * 86400));
+
+      const wLivedEl = document.getElementById("life-grid-weeks-lived");
+      const wSoberEl = document.getElementById("life-grid-weeks-sober");
+      const wLeftEl = document.getElementById("life-grid-weeks-left");
+      const pctLivedEl = document.getElementById("life-grid-pct-lived");
+
+      if (wLivedEl) wLivedEl.innerText = weeksLived + " t";
+      if (wSoberEl) wSoberEl.innerText = soberWeeks + " " + polishPlural(soberWeeks, "tydzień", "tygodnie", "tygodni");
+      if (wLeftEl) wLeftEl.innerText = weeksLeft + " t";
+      if (pctLivedEl) pctLivedEl.innerText = pctLived + "% (" + Math.round(weeksLived / 52) + " lat)";
+
+      // Sync input values
+      const inBirth = document.getElementById("life-grid-birth-year");
+      const inAge = document.getElementById("life-grid-target-age");
+      if (inBirth) inBirth.value = birthYear;
+      if (inAge) inAge.value = targetAge;
+
+      // SVG Generation
+      const boxW = 6.5;
+      const boxH = 6;
+      const gapX = 2;
+      const gapY = 2.5;
+      const stepX = boxW + gapX;
+      const stepY = boxH + gapY;
+      const startX = 44;
+      const startY = 22;
+
+      const svgW = startX + 52 * stepX + 10;
+      const svgH = startY + targetAge * stepY + 15;
+
+      let rects = [];
+      for (let age = 0; age < targetAge; age += 10) {
+        const y = startY + age * stepY + 6;
+        rects.push(`<text x="2" y="${y}" font-size="8.5" font-family="monospace" font-weight="bold" fill="#333">Lat ${age}</text>`);
+        rects.push(`<line x1="${startX - 4}" y1="${startY + age * stepY}" x2="${svgW - 5}" y2="${startY + age * stepY}" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="2,2" />`);
+      }
+
+      [1, 13, 26, 39, 52].forEach(w => {
+        const x = startX + (w - 1) * stepX + 3;
+        rects.push(`<text x="${x}" y="13" font-size="7.5" font-family="monospace" fill="#555" text-anchor="middle">T${w}</text>`);
+      });
+
+      const soberStartIndex = Math.max(0, weeksLived - soberWeeks);
+
+      for (let row = 0; row < targetAge; row++) {
+        for (let col = 0; col < 52; col++) {
+          const weekIdx = row * 52 + col;
+          const x = startX + col * stepX;
+          const y = startY + row * stepY;
+
+          if (weekIdx < weeksLived) {
+            if (weekIdx >= soberStartIndex && soberWeeks > 0) {
+              rects.push(`<rect x="${x}" y="${y}" width="${boxW}" height="${boxH}" fill="#000000" />`);
+              rects.push(`<circle cx="${x + boxW/2}" cy="${y + boxH/2}" r="1.3" fill="#ffffff" />`);
+            } else {
+              rects.push(`<rect x="${x}" y="${y}" width="${boxW}" height="${boxH}" fill="#000000" />`);
+            }
+          } else if (weekIdx === weeksLived) {
+            rects.push(`<rect x="${x}" y="${y}" width="${boxW}" height="${boxH}" fill="#ffffff" stroke="#000000" stroke-width="1.8" />`);
+          } else {
+            rects.push(`<rect x="${x}" y="${y}" width="${boxW}" height="${boxH}" fill="#ffffff" stroke="#aaaaaa" stroke-width="0.8" />`);
+          }
+        }
+      }
+
+      const svgMarkup = `<svg viewBox="0 0 ${svgW} ${svgH}" width="100%" height="auto" style="display:block; margin:0 auto; max-width:540px;" xmlns="http://www.w3.org/2000/svg">
+        ${rects.join("")}
+      </svg>`;
+
+      const slot = document.getElementById("life-grid-svg-slot");
+      if (slot) slot.innerHTML = svgMarkup;
+    }
+
+    /* --- KATALOG KAR NAPRAWCZYCH (SYSTEM ZADOŚĆUCZYNIENIA I DYSCYPLINY) --- */
     const PENALTIES_CATALOG = [
       {
         category: "Fizyczna (Dyscyplina ciała & reset dopaminy)",
@@ -1391,6 +1837,35 @@
             ${item.penaltyTitle ? `<div style="font-size:12px; margin-top:4px; font-weight:bold; border-top:1px dashed #888; padding-top:4px;">Zadanie naprawcze (Kara): ${item.penaltyTitle}</div>` : ""}
             ${item.note ? `<div style="font-size:12px; margin-top:4px; font-style:italic;">"${item.note}"</div>` : ""}
           `;
+        } else if (item.isStoicMorning) {
+          row.style.border = "2px solid #000000";
+          row.style.background = "#ffffff";
+          row.style.padding = "10px";
+          row.style.margin = "8px 0";
+          row.innerHTML = `
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+              <span style="background:#000; color:#fff; padding:1px 6px;">[STOICKA ODPRAWA PORANNA]</span>
+              <span>${item.date.split("T")[0]}</span>
+            </div>
+            ${item.stoicQuote ? `<div style="font-size:12px; font-style:italic; margin-top:5px; border-left:2px solid #000; padding-left:6px;">"${item.stoicQuote}" — ${item.stoicAuthor || "Stoik"}</div>` : ""}
+            ${item.stoicIntention ? `<div style="font-size:13px; font-weight:bold; margin-top:5px;">Intencja dnia: ${item.stoicIntention}</div>` : ""}
+            ${item.stoicDichotomy ? `<div style="font-size:12px; color:#444; margin-top:2px;">Poza moją kontrolą (odpuszczam): ${item.stoicDichotomy}</div>` : ""}
+            ${item.stoicDefense ? `<div style="font-size:12px; margin-top:2px; font-weight:500;">Plan obrony: ${item.stoicDefense}</div>` : ""}
+          `;
+        } else if (item.isStoicEvening) {
+          row.style.border = "2px solid #000000";
+          row.style.background = "#ffffff";
+          row.style.padding = "10px";
+          row.style.margin = "8px 0";
+          row.innerHTML = `
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+              <span style="background:#000; color:#fff; padding:1px 6px;">[STOICKI RACHUNEK SUMIENIA]</span>
+              <span>${item.date.split("T")[0]} | Nastrój: ${item.mood || 3}/5</span>
+            </div>
+            ${item.q1Discipline ? `<div style="font-size:12px; margin-top:5px;"><strong>✓ Zachowana dyscyplina:</strong> ${item.q1Discipline}</div>` : ""}
+            ${item.q2Weakness ? `<div style="font-size:12px; margin-top:3px;"><strong>! Słabość / impuls:</strong> ${item.q2Weakness}</div>` : ""}
+            ${item.q3Lesson ? `<div style="font-size:12px; margin-top:3px;"><strong>Lekcja na jutro:</strong> ${item.q3Lesson}</div>` : ""}
+          `;
         } else {
           row.style.borderBottom = "1px solid var(--border-thin)";
           row.style.padding = "8px 0";
@@ -1685,7 +2160,7 @@
       if (tabId === "trackers") renderTrackers();
       if (tabId === "journal") renderJournal();
       if (tabId === "sos") refreshSOSReason();
-      if (tabId === "motivation") renderMotivation();
+      if (tabId === "motivation") { renderMotivation(); renderLifeGrid(); }
       if (tabId === "stats") renderStats();
       if (tabId === "settings") renderSettings();
     }
