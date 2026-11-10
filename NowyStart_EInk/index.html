@@ -2151,11 +2151,16 @@
 
     /* --- TAB SWITCHING --- */
     function switchTab(tabId) {
-      document.querySelectorAll("nav.tabs button").forEach(b => b.classList.remove("active"));
-      event.target.classList.add("active");
+      document.querySelectorAll("nav.tabs button").forEach(b => {
+        b.classList.remove("active");
+        if (b.getAttribute("onclick") && b.getAttribute("onclick").includes("'" + tabId + "'")) {
+          b.classList.add("active");
+        }
+      });
 
       document.querySelectorAll("section[id^='tab-']").forEach(s => s.classList.add("hidden"));
-      document.getElementById("tab-" + tabId).classList.remove("hidden");
+      const targetSec = document.getElementById("tab-" + tabId);
+      if (targetSec) targetSec.classList.remove("hidden");
 
       if (tabId === "trackers") renderTrackers();
       if (tabId === "journal") renderJournal();
