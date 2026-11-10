@@ -297,6 +297,45 @@
       text-decoration: underline;
     }
 
+    
+    /* Penalty Options & Cards */
+    .penalty-group-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin: 8px 0 4px 0;
+      border-bottom: 1px solid var(--border-thin);
+      padding-bottom: 2px;
+      color: #333333;
+    }
+    .penalty-group-title:first-child {
+      margin-top: 0;
+    }
+    .penalty-item {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      margin-bottom: 5px;
+      cursor: pointer;
+      background: #ffffff;
+      font-size: 13px;
+    }
+    .penalty-item:hover {
+      background: #f4f4f4;
+    }
+    .penalty-item.selected {
+      background: #000000;
+      color: #ffffff;
+      font-weight: bold;
+    }
+    .penalty-item.selected .penalty-subtext {
+      color: #cccccc;
+    }
+    .penalty-subtext {
+      font-size: 11px;
+      color: #555555;
+      margin-top: 2px;
+    }
+
     .heatmap-day.empty {
       border: none;
       background: transparent;
@@ -571,8 +610,12 @@
           <div class="stat-box-value" id="stats-current-streak">0 d</div>
         </div>
         <div class="stat-box">
-          <div class="stat-box-title">Nowe starty</div>
+          <div class="stat-box-title">Złamania / Potknięcia</div>
           <div class="stat-box-value" id="stats-restarts-count">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-title">Kary odrobione</div>
+          <div class="stat-box-value" id="stats-penalties-count">0 / 0</div>
         </div>
         <div class="stat-box">
           <div class="stat-box-title">Zaoszczędzone</div>
@@ -582,10 +625,13 @@
           <div class="stat-box-title">Dni z wpisem</div>
           <div class="stat-box-value" id="stats-journal-days">0</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-box-title">Cele osiągnięte</div>
-          <div class="stat-box-value" id="stats-milestones-total">0</div>
+      </div>
+
+      <div class="card mb-2" id="stats-triggers-analysis-card" style="display:none;">
+        <div class="card-header">
+          <h2 class="card-title">Główne przyczyny złamań (Wyzwalacze)</h2>
         </div>
+        <div id="stats-triggers-breakdown" style="font-size:13px; line-height:1.6;"></div>
       </div>
 
       <div class="card">
@@ -728,6 +774,77 @@
   <!-- ========================================== -->
   <!-- MODAL: NOWY START (RESTART SERII)         -->
   <!-- ========================================== -->
+    <!-- ========================================== -->
+  <!-- MODAL: ZŁAMANIE POSTANOWIENIA (RELAPSE)   -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="modal-relapse">
+    <div class="modal-box">
+      <h2>Rejestracja złamania postanowienia</h2>
+      <p style="font-size:14px; font-weight:bold; margin-bottom: 6px;">
+        Uczciwość wobec faktów to początek powrotu do równowagi.
+      </p>
+      <p style="font-size:13px; color:#444; margin-bottom: 12px;">
+        Zapisz dawkę, zidentyfikuj wyzwalacz i zadeklaruj zadanie naprawcze (karę). Natychmiastowe zadośćuczynienie odcina mechanizm usprawiedliwiania się i zatrzymuje ciąg.
+      </p>
+
+      <div class="stat-box mb-2">
+        <div class="stat-box-title">Dotychczasowy licznik:</div>
+        <div class="stat-box-value" id="relapse-tracker-info" style="font-size: 15px;">-</div>
+      </div>
+
+      <div class="form-group">
+        <label>Kiedy nastąpiło złamanie postanowienia?</label>
+        <input type="datetime-local" id="relapse-date">
+      </div>
+
+      <div class="form-group">
+        <label>Przyjęta dawka / ilość substancji:</label>
+        <input type="text" id="relapse-amount" placeholder="np. 2 piwa, 3 papierosy, 100 zł, 0.5g...">
+        <div id="relapse-amount-hint" style="font-size:11px; color:#555; margin-top:2px;"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Przyczyna / Główny wyzwalacz (wybierz kafelki):</label>
+        <div class="chips-container" id="relapse-triggers-chips"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Wybierz zadanie naprawcze (Karę za złamanie serii):</label>
+        <p style="font-size:12px; color:#444; margin-bottom:6px;">
+          Poniesienie natychmiastowego, namacalnego kosztu zatrzymuje mechanizm usprawiedliwiania się:
+        </p>
+        <div id="relapse-penalties-list" style="max-height: 220px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; background: #ffffff;"></div>
+        <div style="margin-top: 8px;">
+          <input type="text" id="relapse-custom-penalty" placeholder="Lub wpisz własną karę / zobowiązanie...">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Szczera notatka i okoliczności (opcjonalnie):</label>
+        <textarea id="relapse-note" placeholder="Co bezpośrednio poprzedziło sięgnięcie po substancję? Jaki błąd popełniłeś? Co zrobisz za tydzień w tej samej sytuacji?"></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="closeModal('modal-relapse')">Anuluj</button>
+        <button class="btn" style="background:#000000; color:#ffffff; font-weight:bold;" onclick="saveRelapse()">Zatwierdź złamanie i nałóż karę</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: HISTORIA POTKNIĘĆ I KAR             -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="modal-relapse-history">
+    <div class="modal-box">
+      <h2>Historia potknięć i zadań naprawczych</h2>
+      <div id="relapse-history-tracker-title" style="font-size:13px; font-weight:bold; margin-bottom:10px; color:#444;"></div>
+      <div id="relapse-history-list" style="max-height: 380px; overflow-y: auto; margin-bottom: 14px;"></div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="closeModal('modal-relapse-history')">Zamknij</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="modal-restart">
     <div class="modal-box">
       <h2>Nowy start</h2>
@@ -846,6 +963,57 @@
       other: { name: "Inne", unit: "jednostki", warning: false }
     };
 
+        /* --- KATALOG KAR NAPRAWCZYCH (SYSTEM ZADOŚĆUCZYNIENIA I DYSCYPLINY) --- */
+    const PENALTIES_CATALOG = [
+      {
+        category: "Fizyczna (Dyscyplina ciała & reset dopaminy)",
+        items: [
+          { id: "pen-pushups", title: "100 pompek w seriach w ciągu 24h", desc: "Podziel na serie (np. 5x20 lub 10x10) i wykonaj przed snem." },
+          { id: "pen-run", title: "Karny marsz lub bieg 5 km bez telefonu", desc: "5 km na świeżym powietrzu bez muzyki, słuchawek i ekranu." },
+          { id: "pen-cold", title: "Zimny prysznic (min. 2 minuty lodowatej wody)", desc: "Szok termiczny resetuje poziom dopaminy i układ współczulny." },
+          { id: "pen-workout", title: "30 minut intensywnego treningu korekcyjnego", desc: "Trening wzmacniający plecy, postawę i mięśnie głębokie." }
+        ]
+      },
+      {
+        category: "Finansowa (Zadośćuczynienie portfela)",
+        items: [
+          { id: "pen-shelter", title: "Wpłata 50 zł na schronisko dla zwierząt", desc: "Realny koszt finansowy przekierowany na pomoc bezbronnym zwierzętom." },
+          { id: "pen-charity", title: "Wpłata 100 zł na wybrany cel charytatywny", desc: "Przelew na zbiórkę lub fundację ratującą zdrowie." },
+          { id: "pen-freeze", title: "Karna blokada: odjęcie 100 zł z puli nagród", desc: "Zmniejszenie puli zaoszczędzonych środków na wymarzony cel o 100 zł." }
+        ]
+      },
+      {
+        category: "Cyfrowa (Post dopaminowy)",
+        items: [
+          { id: "pen-nosocial", title: "24h całkowity post od social mediów i wideo", desc: "Zero YouTube, filmów, TikToka czy Facebooka przez pełną dobę." },
+          { id: "pen-nogames", title: "24h bez gier wideo i rozrywki ekranowej", desc: "Odpoczynek dla układu nagrody i przebodźcowanego mózgu." },
+          { id: "pen-boxphone", title: "Telefon w szufladzie od godziny 19:00", desc: "Wyłącz telefon i schowaj go poza zasięg wzroku na cały wieczór." }
+        ]
+      },
+      {
+        category: "Mentalna & Zadośćuczynienie",
+        items: [
+          { id: "pen-essay", title: "Pisemna analiza nawrotu na kartce A4", desc: "Napisz odręcznie: co wywołało impuls, jaki błąd popełniłeś i co zrobisz za tydzień." },
+          { id: "pen-cleaning", title: "Gruntowne generalne sprzątanie mieszkania", desc: "Wyszorowanie podłóg, mycie okien, porządek w szafach – ład w przestrzeni." },
+          { id: "pen-favor", title: "Bezinteresowne dobro dla bliskiej osoby", desc: "Zrób coś dobrego, wyręcz w trudnym zadaniu kogoś, na kim Ci zależy." }
+        ]
+      }
+    ];
+
+    const RELAPSE_TRIGGERS = [
+      "Stres / Przebodźcowanie",
+      "Złość / Frustracja",
+      "Samotność / Pustka",
+      "Zmęczenie / Brak snu",
+      "Nuda / Brak celu",
+      "Presja otoczenia / Impreza",
+      "Łatwa dostępność substancji",
+      "Nagły silny głód (Craving)",
+      "Iluzja: Tylko ten jeden raz",
+      "Świętowanie sukcesu jako nagroda",
+      "Konflikt z bliskimi"
+    ];
+
     const COMMON_TRIGGERS = [
       "Stres", "Zmęczenie", "Nuda", "Presja otoczenia", "Kłótnia", "Samotność", "Impreza", "Dostępność"
     ];
@@ -861,7 +1029,9 @@
       "Gdy pojawia się pokusa, nie walcz z nią siłowo. Zauważ ją spokojnie jak przepływającą chmurę i daj jej odpłynąć.",
       "Zasada 24 godzin: Obiecaj sobie, że jeśli naprawdę zechcesz wrócić do nawyku, poczekasz z tą decyzją do jutra rano. Po nocy pokusa niemal zawsze znika.",
       "Trzeźwość to nie jest wyrzeczenie ani kara. To odzyskanie wolności decydowania o własnym poranku i życiu.",
-      "Twój spokój jest wart więcej niż jakakolwiek chwilowa ulga okupiona poczuciem winy."
+      "Twój spokój jest wart więcej niż jakakolwiek chwilowa ulga okupiona poczuciem winy.",
+      "Zasada Naprawcza: Zadanie naprawcze (kara) za potknięcie nie służy samobiczowaniu, lecz natychmiastowemu przywróceniu dyscypliny i sprawczości.",
+      "Efekt Złamania Abstynencji (AVE): Największym wrogiem po potknięciu jest myśl 'skoro uległem, to wszystko stracone'. Zrób zadośćuczynienie i wracaj od razu do gry."
     ];
 
     let currentThoughtIdx = 0;
@@ -1082,6 +1252,41 @@
           `;
         }
 
+        // Check active pending penalty
+        const pendingRelapse = (tracker.relapses || []).slice().reverse().find(r => r.penalty && !r.penalty.isCompleted);
+        const totalRelapses = (tracker.relapses || []).length;
+        const completedCount = (tracker.relapses || []).filter(r => r.penalty && r.penalty.isCompleted).length;
+
+        let penaltyBoxHTML = "";
+        if (pendingRelapse && pendingRelapse.penalty) {
+          const pDate = new Date(pendingRelapse.restartedAt).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" });
+          penaltyBoxHTML = `
+            <div class="disclaimer-box" style="margin: 10px 0; border: 2px solid #000000; background: #ffffff;">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:bold;">
+                <span>[!] ZADANIE NAPRAWCZE (KARA):</span>
+                <span style="border:1px solid #000; padding:1px 6px; background:#000; color:#fff;">DO WYKONANIA</span>
+              </div>
+              <div style="font-size:14px; font-weight:bold; margin:6px 0;">
+                ${pendingRelapse.penalty.title}
+              </div>
+              ${pendingRelapse.penalty.desc ? `<div style="font-size:12px; color:#444; margin-bottom:4px;">${pendingRelapse.penalty.desc}</div>` : ""}
+              <div style="font-size:11px; color:#666; margin-bottom:8px;">
+                Złamanie: ${pDate} ${pendingRelapse.substanceAmount ? `&bull; Dawka: ${pendingRelapse.substanceAmount}` : ""}
+              </div>
+              <button class="btn btn-small" style="width:100%; font-weight:bold; background:#000000; color:#ffffff;" onclick="completePenalty('${tracker.id}', '${pendingRelapse.penalty.id}')">
+                [✓] Oznacz jako wykonane (Zadośćuczynienie zaliczone)
+              </button>
+            </div>
+          `;
+        } else if (totalRelapses > 0) {
+          penaltyBoxHTML = `
+            <div style="font-size: 11px; color:#444; margin-top:8px; border-top:1px dashed var(--border-thin); padding-top:4px; display:flex; justify-content:space-between;">
+              <span>Zarejestrowane potknięcia: <strong>${totalRelapses}</strong></span>
+              <span>Kary odrobione: <strong>${completedCount}/${totalRelapses}</strong></span>
+            </div>
+          `;
+        }
+
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
@@ -1107,10 +1312,13 @@
           ` : ""}
 
           ${savingsHTML}
+          ${penaltyBoxHTML}
 
-          <div class="btn-group">
-            <button class="btn btn-secondary btn-small" onclick="openRestartModal('${tracker.id}')">Nowy start</button>
-            <button class="btn btn-secondary btn-small" onclick="archiveTracker('${tracker.id}')">Archiwizuj</button>
+          <div class="btn-group" style="margin-top: 10px; flex-wrap: wrap;">
+            <button class="btn btn-small" style="background:#000000; color:#ffffff; font-weight:bold;" onclick="openRelapseModal('${tracker.id}')">[!] Złamanie postanowienia</button>
+            <button class="btn btn-secondary btn-small" onclick="openRelapseHistoryModal('${tracker.id}')">Kary & Historia (${totalRelapses})</button>
+            <button class="btn btn-secondary btn-small" onclick="openRestartModal('${tracker.id}')">Reset daty</button>
+            <button class="btn btn-secondary btn-small" onclick="archiveTracker('${tracker.id}')">Archiwum</button>
           </div>
         `;
         container.appendChild(card);
@@ -1165,16 +1373,36 @@
       const sorted = [...appState.checkIns].sort((a, b) => new Date(b.date) - new Date(a.date));
       sorted.slice(0, 10).forEach(item => {
         const row = document.createElement("div");
-        row.style.borderBottom = "1px solid var(--border-thin)";
-        row.style.padding = "8px 0";
-        row.innerHTML = `
-          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
-            <span>${item.date.split("T")[0]}</span>
-            <span>Nastrój: ${item.mood}/5 | Ochota: ${item.craving}/10</span>
-          </div>
-          ${item.triggers && item.triggers.length > 0 ? `<div style="font-size:12px; margin-top:2px;">Wyzwalacze: ${item.triggers.join(", ")}</div>` : ""}
-          ${item.note ? `<div style="font-size:13px; margin-top:2px;">${item.note}</div>` : ""}
-        `;
+        if (item.isRelapse) {
+          row.style.border = "2px solid #000000";
+          row.style.background = "#ffffff";
+          row.style.padding = "10px";
+          row.style.margin = "8px 0";
+          row.innerHTML = `
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+              <span style="background:#000; color:#fff; padding:1px 6px;">[!] ZŁAMANIE POSTANOWIENIA</span>
+              <span>${item.date.split("T")[0]} ${item.date.split("T")[1]?.slice(0,5) || ""}</span>
+            </div>
+            <div style="font-size:13px; font-weight:bold; margin-top:4px;">
+              Licznik: ${item.relapseTrackerName || "Postanowienie"}
+            </div>
+            ${item.relapseAmount ? `<div style="font-size:12px; font-weight:bold; margin-top:2px;">Przyjęta dawka: ${item.relapseAmount}</div>` : ""}
+            ${item.triggers && item.triggers.length > 0 ? `<div style="font-size:12px; color:#333; margin-top:2px;">Wyzwalacze: ${item.triggers.join(", ")}</div>` : ""}
+            ${item.penaltyTitle ? `<div style="font-size:12px; margin-top:4px; font-weight:bold; border-top:1px dashed #888; padding-top:4px;">Zadanie naprawcze (Kara): ${item.penaltyTitle}</div>` : ""}
+            ${item.note ? `<div style="font-size:12px; margin-top:4px; font-style:italic;">"${item.note}"</div>` : ""}
+          `;
+        } else {
+          row.style.borderBottom = "1px solid var(--border-thin)";
+          row.style.padding = "8px 0";
+          row.innerHTML = `
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+              <span>${item.date.split("T")[0]}</span>
+              <span>Nastrój: ${item.mood}/5 | Ochota: ${item.craving}/10</span>
+            </div>
+            ${item.triggers && item.triggers.length > 0 ? `<div style="font-size:12px; margin-top:2px;">Wyzwalacze: ${item.triggers.join(", ")}</div>` : ""}
+            ${item.note ? `<div style="font-size:13px; margin-top:2px;">${item.note}</div>` : ""}
+          `;
+        }
         list.appendChild(row);
       });
     }
@@ -1349,12 +1577,47 @@
       const totalSavings = calculateTotalSavedMoney();
       const uniqueJournalDays = new Set(appState.checkIns.map(c => c.date.split("T")[0])).size;
 
+      // Penalties & Relapses Statistics
+      let totalRelapsesCount = 0;
+      let totalPenaltiesCount = 0;
+      let completedPenaltiesCount = 0;
+      const triggersFrequency = {};
+
+      appState.trackers.forEach(t => {
+        (t.relapses || []).forEach(r => {
+          totalRelapsesCount++;
+          if (r.penalty) {
+            totalPenaltiesCount++;
+            if (r.penalty.isCompleted) completedPenaltiesCount++;
+          }
+          (r.triggers || []).forEach(trig => {
+            triggersFrequency[trig] = (triggersFrequency[trig] || 0) + 1;
+          });
+        });
+      });
+
       document.getElementById("stats-longest-streak").innerText = longestOverall + " d";
       document.getElementById("stats-current-streak").innerText = currentOverall + " d";
-      document.getElementById("stats-restarts-count").innerText = totalRestarts;
+      document.getElementById("stats-restarts-count").innerText = totalRelapsesCount;
+      document.getElementById("stats-penalties-count").innerText = `${completedPenaltiesCount} / ${totalPenaltiesCount}`;
       document.getElementById("stats-savings-total").innerText = totalSavings + " zł";
       document.getElementById("stats-journal-days").innerText = uniqueJournalDays;
-      document.getElementById("stats-milestones-total").innerText = totalMilestones;
+
+      // Trigger analysis box
+      const triggerBox = document.getElementById("stats-triggers-analysis-card");
+      const triggerList = document.getElementById("stats-triggers-breakdown");
+      const trigEntries = Object.entries(triggersFrequency).sort((a, b) => b[1] - a[1]);
+      if (trigEntries.length > 0) {
+        triggerBox.style.display = "block";
+        triggerList.innerHTML = trigEntries.map(([tName, count]) => `
+          <div style="display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px solid var(--border-thin);">
+            <span>&bull; ${tName}</span>
+            <strong>${count} ${polishPlural(count, "raz", "razy", "razy")}</strong>
+          </div>
+        `).join("");
+      } else {
+        triggerBox.style.display = "none";
+      }
 
       const mList = document.getElementById("stats-milestones-list");
       mList.innerHTML = "";
@@ -1582,6 +1845,247 @@
     }
 
     /* --- RESTART SERII (NOWY START) --- */
+        /* --- OBSŁUGA ZŁAMAŃ POSTANOWIENIA I SYSTEMU KAR --- */
+    let currentRelapseTrackerId = null;
+    let selectedPenaltyId = "pen-pushups";
+
+    function openRelapseModal(trackerId) {
+      currentRelapseTrackerId = trackerId;
+      const tracker = appState.trackers.find(t => t.id === trackerId);
+      if (!tracker) return;
+
+      const s = calculateStreaks(tracker);
+      const trackerName = tracker.customName || SUBSTANCES[tracker.substanceKind]?.name || "Licznik";
+      document.getElementById("relapse-tracker-info").innerText = 
+        `${trackerName} • Bieżąca seria: ${formatDays(s.currentDays)} • Najdłuższa: ${formatDays(s.longestDays)}`;
+
+      document.getElementById("relapse-date").value = new Date().toISOString().slice(0, 16);
+      document.getElementById("relapse-amount").value = "";
+      
+      const subInfo = SUBSTANCES[tracker.substanceKind];
+      const hintEl = document.getElementById("relapse-amount-hint");
+      if (subInfo && subInfo.unit) {
+        hintEl.innerText = `Typowa jednostka dla tej substancji: ${subInfo.unit}`;
+      } else {
+        hintEl.innerText = "";
+      }
+
+      document.getElementById("relapse-note").value = "";
+      document.getElementById("relapse-custom-penalty").value = "";
+
+      // Triggers chips
+      const chipsBox = document.getElementById("relapse-triggers-chips");
+      chipsBox.innerHTML = "";
+      RELAPSE_TRIGGERS.forEach(t => {
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.innerText = t;
+        chip.onclick = () => chip.classList.toggle("selected");
+        chipsBox.appendChild(chip);
+      });
+
+      // Render penalties
+      selectedPenaltyId = "pen-pushups";
+      renderRelapsePenalties();
+
+      // Custom penalty listener
+      const customInput = document.getElementById("relapse-custom-penalty");
+      customInput.oninput = () => {
+        if (customInput.value.trim().length > 0) {
+          selectedPenaltyId = "custom";
+          renderRelapsePenalties();
+        }
+      };
+
+      openModal("modal-relapse");
+    }
+
+    function renderRelapsePenalties() {
+      const container = document.getElementById("relapse-penalties-list");
+      container.innerHTML = "";
+
+      PENALTIES_CATALOG.forEach(cat => {
+        const title = document.createElement("div");
+        title.className = "penalty-group-title";
+        title.innerText = cat.category;
+        container.appendChild(title);
+
+        cat.items.forEach(item => {
+          const div = document.createElement("div");
+          div.className = "penalty-item" + (selectedPenaltyId === item.id ? " selected" : "");
+          div.innerHTML = `
+            <div><strong>${item.title}</strong></div>
+            <div class="penalty-subtext">${item.desc}</div>
+          `;
+          div.onclick = () => {
+            selectedPenaltyId = item.id;
+            document.getElementById("relapse-custom-penalty").value = "";
+            renderRelapsePenalties();
+          };
+          container.appendChild(div);
+        });
+      });
+    }
+
+    function saveRelapse() {
+      const tracker = appState.trackers.find(t => t.id === currentRelapseTrackerId);
+      if (!tracker) return;
+
+      const dateVal = document.getElementById("relapse-date").value;
+      const amountVal = document.getElementById("relapse-amount").value.trim();
+      const noteVal = document.getElementById("relapse-note").value.trim();
+      const selectedTriggers = Array.from(document.querySelectorAll("#relapse-triggers-chips .chip.selected"))
+        .map(c => c.innerText);
+
+      let penaltyTitle = "";
+      let penaltyDesc = "";
+      let penaltyCat = "Inne";
+
+      if (selectedPenaltyId === "custom") {
+        const customVal = document.getElementById("relapse-custom-penalty").value.trim();
+        penaltyTitle = customVal || "Własne zadanie dyscyplinujące";
+        penaltyDesc = "Zdefiniowane przez użytkownika";
+        penaltyCat = "Własna";
+      } else {
+        for (let cat of PENALTIES_CATALOG) {
+          const found = cat.items.find(i => i.id === selectedPenaltyId);
+          if (found) {
+            penaltyTitle = found.title;
+            penaltyDesc = found.desc;
+            penaltyCat = cat.category;
+            break;
+          }
+        }
+      }
+
+      const relapseDate = new Date(dateVal);
+      const prevStart = new Date(tracker.startDate);
+      const prevStreakSec = Math.max(0, Math.floor((relapseDate.getTime() - prevStart.getTime()) / 1000));
+      const prevStreakDays = Math.floor(prevStreakSec / 86400);
+
+      const penaltyObj = penaltyTitle ? {
+        id: "pen-" + Date.now(),
+        title: penaltyTitle,
+        desc: penaltyDesc,
+        category: penaltyCat,
+        isCompleted: false,
+        completedAt: null
+      } : null;
+
+      const relapse = {
+        id: "rel-" + Date.now(),
+        previousStart: tracker.startDate,
+        restartedAt: relapseDate.toISOString(),
+        previousStreakDays: prevStreakDays,
+        substanceAmount: amountVal || null,
+        triggers: selectedTriggers,
+        note: noteVal || null,
+        penalty: penaltyObj
+      };
+
+      if (!tracker.relapses) tracker.relapses = [];
+      tracker.relapses.push(relapse);
+      tracker.startDate = relapseDate.toISOString();
+
+      // Automatyczny wpis do Dziennika (Check-ins)
+      const trackerName = tracker.customName || SUBSTANCES[tracker.substanceKind]?.name || "Licznik";
+      appState.checkIns.push({
+        id: "chk-rel-" + Date.now(),
+        date: relapseDate.toISOString(),
+        mood: 2,
+        craving: 8,
+        isRelapse: true,
+        relapseTrackerName: trackerName,
+        relapseAmount: amountVal,
+        triggers: selectedTriggers,
+        penaltyTitle: penaltyTitle,
+        note: (amountVal ? `Dawka: ${amountVal}. ` : "") + (penaltyTitle ? `Kara: ${penaltyTitle}. ` : "") + (noteVal || "")
+      });
+
+      saveAppState(appState);
+      closeModal("modal-relapse");
+      renderTrackers();
+      renderJournal();
+      renderStats();
+    }
+
+    function completePenalty(trackerId, penaltyId) {
+      const tracker = appState.trackers.find(t => t.id === trackerId);
+      if (!tracker || !tracker.relapses) return;
+
+      const relapse = tracker.relapses.find(r => r.penalty && r.penalty.id === penaltyId);
+      if (relapse && relapse.penalty) {
+        relapse.penalty.isCompleted = true;
+        relapse.penalty.completedAt = new Date().toISOString();
+        saveAppState(appState);
+        renderTrackers();
+        renderJournal();
+        renderStats();
+        alert("Zadanie naprawcze (kara) zostało pomyślnie zaliczone. Czyste konto i zachowana dyscyplina!");
+      }
+    }
+
+    function openRelapseHistoryModal(trackerId) {
+      const tracker = appState.trackers.find(t => t.id === trackerId);
+      if (!tracker) return;
+
+      const trackerName = tracker.customName || SUBSTANCES[tracker.substanceKind]?.name || "Licznik";
+      document.getElementById("relapse-history-tracker-title").innerText = 
+        `Historia dla: ${trackerName} (Razem potknięć: ${(tracker.relapses || []).length})`;
+
+      const container = document.getElementById("relapse-history-list");
+      container.innerHTML = "";
+
+      if (!tracker.relapses || tracker.relapses.length === 0) {
+        container.innerHTML = `
+          <div class="card text-center" style="padding:16px;">
+            <p style="font-weight:bold;">Czyste konto!</p>
+            <p style="font-size:13px; color:#555;">Nie zarejestrowano żadnych złamań dla tego licznika.</p>
+          </div>
+        `;
+      } else {
+        const sorted = [...tracker.relapses].sort((a, b) => new Date(b.restartedAt) - new Date(a.restartedAt));
+        sorted.forEach((r, idx) => {
+          const item = document.createElement("div");
+          item.className = "card";
+          item.style.marginBottom = "8px";
+          item.style.padding = "10px";
+          
+          const dtStr = new Date(r.restartedAt).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" });
+          const streakDays = r.previousStreakDays !== undefined ? r.previousStreakDays : Math.floor(Math.max(0, (new Date(r.restartedAt) - new Date(r.previousStart)) / 86400000));
+
+          let penaltyHTML = "";
+          if (r.penalty) {
+            const isDone = r.penalty.isCompleted;
+            penaltyHTML = `
+              <div style="border-top:1px dashed var(--border-thin); margin-top:6px; padding-top:6px; font-size:12px;">
+                <div><strong>Zadanie naprawcze (Kara):</strong> ${r.penalty.title}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                  <span>Status: <strong>${isDone ? "✓ WYKONANE (" + new Date(r.penalty.completedAt).toLocaleDateString("pl-PL") + ")" : "[!] W TOKU (Do wykonania)"}</strong></span>
+                  ${!isDone ? `<button class="btn btn-small" style="padding:2px 8px; font-size:11px;" onclick="completePenalty('${tracker.id}', '${r.penalty.id}'); openRelapseHistoryModal('${tracker.id}');">Zalicz teraz</button>` : ""}
+                </div>
+              </div>
+            `;
+          }
+
+          item.innerHTML = `
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+              <span>#${sorted.length - idx}. ${dtStr}</span>
+              <span>Poprzednia seria: ${streakDays} d</span>
+            </div>
+            ${r.substanceAmount ? `<div style="font-size:13px; font-weight:bold; margin-top:3px;">Przyjęta dawka: ${r.substanceAmount}</div>` : ""}
+            ${r.triggers && r.triggers.length > 0 ? `<div style="font-size:12px; color:#444; margin-top:2px;">Wyzwalacze: ${r.triggers.join(", ")}</div>` : ""}
+            ${r.note ? `<div style="font-size:12px; margin-top:4px; font-style:italic;">"${r.note}"</div>` : ""}
+            ${penaltyHTML}
+          `;
+          container.appendChild(item);
+        });
+      }
+
+      openModal("modal-relapse-history");
+    }
+
+
     let currentRestartTrackerId = null;
 
     function openRestartModal(trackerId) {
